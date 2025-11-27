@@ -1,9 +1,7 @@
 # We got jobs - Your ultimate freelance market
 
-Full-stack freelance marketplace built with **Next.js 15 + NestJS 11 + Prisma 7 + Turborepo + better-auth**
+Full-stack freelance marketplace built with **Next.js 15 + NestJS 11 + Prisma 7 + better-auth**
 
-- Frontend → http://localhost:3000  
-- Backend  → http://localhost:3001  
 
 ## Tech Stack
 
