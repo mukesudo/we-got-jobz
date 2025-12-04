@@ -1,4 +1,4 @@
-# We got jobs - Your ultimate freelance market
+# We got jobz - Your ultimate freelance market
 
 Full-stack freelance marketplace built with **Next.js 15 + NestJS 11 + Prisma 7 + better-auth**
 
