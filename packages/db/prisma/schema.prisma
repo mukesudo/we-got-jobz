@@ -1,0 +1,336 @@
+// Prisma Schema - Freelance Marketplace
+// Location: packages/db/prisma/schema.prisma
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// ============================================
+// AUTHENTICATION & USER MANAGEMENT
+// ============================================
+
+model Account {
+  id                 String  @id @default(cuid())
+  userId             String
+  type               String
+  provider           String
+  providerAccountId  String
+  refresh_token      String? @db.Text
+  access_token       String? @db.Text
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String? @db.Text
+  session_state      String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  sessionToken String @unique
+  userId    String
+  expires   DateTime
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model User {
+  id                String   @id @default(cuid())
+  email             String   @unique
+  name              String?
+  image             String?
+  emailVerified     DateTime?
+  password          String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  // User Profile
+  profile           Profile?
+  
+  // User as Client (Employer)
+  postedJobs        Job[]             @relation("ClientJobs")
+  receivedBids      Bid[]             @relation("ClientBids")
+  contracts         Contract[]        @relation("ClientContracts")
+  clientPayments    Payment[]         @relation("ClientPayments")
+  
+  // User as Freelancer
+  submittedBids     Bid[]             @relation("FreelancerBids")
+  acceptedContracts Contract[]        @relation("FreelancerContracts")
+  freelancerPayments Payment[]        @relation("FreelancerPayments")
+  
+  // Communication
+  sentMessages      Message[]         @relation("SenderMessages")
+  receivedMessages  Message[]         @relation("ReceiverMessages")
+  
+  // Verification & Reviews
+  givenReviews      Review[]          @relation("ReviewerReviews")
+  receivedReviews   Review[]          @relation("RevieweeReviews")
+  
+  // Relationships
+  accounts          Account[]
+  sessions          Session[]
+
+  @@index([email])
+  @@index([createdAt])
+}
+
+model Profile {
+  id                String   @id @default(cuid())
+  userId            String   @unique
+  bio               String?  @db.Text
+  headline          String?
+  profilePicture    String?
+  hourlyRate        Float?
+  totalEarnings     Float    @default(0)
+  totalSpent        Float    @default(0)
+  successRate       Float    @default(0)
+  totalJobs         Int      @default(0)
+  skills            String[] @default([])
+  portfolio         String[] @default([])
+  languages         String[] @default([])
+  timezone          String?
+  isVerified        Boolean  @default(false)
+  verificationDate  DateTime?
+  rating            Float    @default(0)
+  totalReviews      Int      @default(0)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+// ============================================
+// JOB MARKETPLACE
+// ============================================
+
+model Job {
+  id                String   @id @default(cuid())
+  clientId          String
+  title             String
+  description       String   @db.Text
+  category          String
+  skills            String[]
+  budgetType        BudgetType  // FIXED or HOURLY
+  budgetMin         Float
+  budgetMax         Float
+  duration          String?  // e.g., "1-3 months", "Less than 1 month"
+  experience        String?  // e.g., "Beginner", "Intermediate", "Expert"
+  status            JobStatus  @default(OPEN)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  deadline          DateTime?
+  
+  client            User     @relation("ClientJobs", fields: [clientId], references: [id], onDelete: Cascade)
+  bids              Bid[]
+  contracts         Contract[]
+  messages          Message[]
+  
+  @@index([clientId])
+  @@index([status])
+  @@index([category])
+  @@index([createdAt])
+  @@fulltext([title, description])
+}
+
+model Bid {
+  id                String   @id @default(cuid())
+  jobId             String
+  freelancerId      String
+  clientId          String   // Cache for easier queries
+  proposedAmount    Float
+  proposedTimeline  String
+  coverLetter       String   @db.Text
+  status            BidStatus  @default(PENDING)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  job               Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  freelancer        User     @relation("FreelancerBids", fields: [freelancerId], references: [id], onDelete: Cascade)
+  client            User     @relation("ClientBids", fields: [clientId], references: [id], onDelete: Cascade)
+  
+  @@unique([jobId, freelancerId])
+  @@index([jobId])
+  @@index([freelancerId])
+  @@index([status])
+}
+
+// ============================================
+// CONTRACTS & PAYMENTS
+// ============================================
+
+model Contract {
+  id                String   @id @default(cuid())
+  jobId             String
+  clientId          String
+  freelancerId      String
+  acceptedBidId     String?  // Reference to the accepted bid
+  amount            Float
+  startDate         DateTime
+  endDate           DateTime?
+  status            ContractStatus  @default(ACTIVE)
+  description       String?  @db.Text
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  job               Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  client            User     @relation("ClientContracts", fields: [clientId], references: [id])
+  freelancer        User     @relation("FreelancerContracts", fields: [freelancerId], references: [id])
+  payments          Payment[]
+  
+  @@index([clientId])
+  @@index([freelancerId])
+  @@index([status])
+}
+
+model Payment {
+  id                String   @id @default(cuid())
+  contractId        String
+  clientId          String
+  freelancerId      String
+  amount            Float
+  stripePaymentId   String?  @unique
+  status            PaymentStatus  @default(PENDING)
+  description       String?
+  dueDate           DateTime?
+  paidDate          DateTime?
+  releaseDate       DateTime?
+  milestoneNumber   Int?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  contract          Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  client            User     @relation("ClientPayments", fields: [clientId], references: [id])
+  freelancer        User     @relation("FreelancerPayments", fields: [freelancerId], references: [id])
+  
+  @@index([contractId])
+  @@index([clientId])
+  @@index([freelancerId])
+  @@index([status])
+}
+
+// ============================================
+// MESSAGING & COMMUNICATION
+// ============================================
+
+model Message {
+  id                String   @id @default(cuid())
+  jobId             String
+  senderId          String
+  receiverId        String
+  content           String   @db.Text
+  attachments       String[] @default([])
+  isRead            Boolean  @default(false)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  job               Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  sender            User     @relation("SenderMessages", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver          User     @relation("ReceiverMessages", fields: [receiverId], references: [id], onDelete: Cascade)
+  
+  @@index([jobId])
+  @@index([senderId])
+  @@index([receiverId])
+  @@index([createdAt])
+}
+
+// ============================================
+// REVIEWS & RATINGS
+// ============================================
+
+model Review {
+  id                String   @id @default(cuid())
+  contractId        String?
+  reviewerId        String
+  revieweeId        String
+  rating            Int      // 1-5 stars
+  comment           String?  @db.Text
+  isFromClient      Boolean  // true if client reviewed freelancer, false if freelancer reviewed client
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  reviewer          User     @relation("ReviewerReviews", fields: [reviewerId], references: [id], onDelete: Cascade)
+  reviewee          User     @relation("RevieweeReviews", fields: [revieweeId], references: [id], onDelete: Cascade)
+  
+  @@unique([contractId, reviewerId])
+  @@index([reviewerId])
+  @@index([revieweeId])
+}
+
+// ============================================
+// DISPUTES & SUPPORT
+// ============================================
+
+model Dispute {
+  id                String   @id @default(cuid())
+  contractId        String
+  initiatedById     String
+  title             String
+  description       String   @db.Text
+  status            DisputeStatus  @default(OPEN)
+  resolution        String?  @db.Text
+  resolvedById      String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  resolvedAt        DateTime?
+  
+  @@index([contractId])
+  @@index([status])
+}
+
+// ============================================
+// ENUMS
+// ============================================
+
+enum BudgetType {
+  FIXED
+  HOURLY
+}
+
+enum JobStatus {
+  OPEN
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+  CLOSED
+}
+
+enum BidStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  WITHDRAWN
+}
+
+enum ContractStatus {
+  ACTIVE
+  COMPLETED
+  CANCELLED
+  PAUSED
+}
+
+enum PaymentStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+enum DisputeStatus {
+  OPEN
+  UNDER_REVIEW
+  RESOLVED
+  CANCELLED
+}

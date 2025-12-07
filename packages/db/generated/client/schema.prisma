@@ -1,0 +1,279 @@
+// packages/db/prisma/schema.prisma
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/client"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  emailVerified DateTime?
+  name          String?
+  image         String?
+  role          UserRole  @default(CLIENT)
+  isActive      Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  freelancerProfile     FreelancerProfile?
+  clientProfile         ClientProfile?
+  projectsPosted        Project[]          @relation("PostedProjects")
+  bidsSubmitted         Bid[]              @relation("SubmittedBids")
+  contractsAsClient     Contract[]         @relation("ClientContracts")
+  contractsAsFreelancer Contract[]         @relation("FreelancerContracts")
+  reviewsReceived       Review[]           @relation("ReceivedReviews")
+  reviewsGiven          Review[]           @relation("GivenReviews")
+  transactions          Transaction[]
+  wallet                Wallet?
+
+  @@index([email])
+  @@map("users")
+}
+
+enum UserRole {
+  CLIENT
+  FREELANCER
+  ADMIN
+}
+
+model FreelancerProfile {
+  id           String   @id @default(cuid())
+  userId       String   @unique
+  title        String?
+  hourlyRate   Float    @default(0)
+  skills       Skill[]  @relation("FreelancerSkills")
+  bio          String?
+  portfolio    String[]
+  availability Int?
+  rating       Float    @default(0)
+  totalReviews Int      @default(0)
+  isVerified   Boolean  @default(false)
+  createdAt    DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("freelancer_profiles")
+}
+
+model ClientProfile {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  company   String?
+  location  String?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("client_profiles")
+}
+
+model Category {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  icon        String?
+  createdAt   DateTime @default(now())
+
+  projects Project[] @relation("CategoryProjects")
+  skills   Skill[]
+
+  @@map("categories")
+}
+
+model Skill {
+  id         String  @id @default(cuid())
+  name       String  @unique
+  categoryId String?
+
+  category    Category?           @relation(fields: [categoryId], references: [id])
+  projects    Project[]           @relation("ProjectSkills")
+  freelancers FreelancerProfile[] @relation("FreelancerSkills")
+
+  @@index([name])
+  @@map("skills")
+}
+
+model Project {
+  id          String        @id @default(cuid())
+  title       String
+  description String
+  budget      Float
+  budgetType  BudgetType    @default(FIXED)
+  deadline    DateTime?
+  status      ProjectStatus @default(OPEN)
+  clientId    String
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  client     User        @relation("PostedProjects", fields: [clientId], references: [id])
+  bids       Bid[]
+  contract   Contract?
+  skills     Skill[]     @relation("ProjectSkills")
+  milestones Milestone[] @relation("ProjectMilestones")
+
+  // NEW: back-relations required by Prisma 7
+  category   Category? @relation("CategoryProjects", fields: [categoryId], references: [id])
+  categoryId String?
+  reviews    Review[]  @relation("ProjectReviews")
+
+  @@index([status])
+  @@index([clientId])
+  @@map("projects")
+}
+
+enum BudgetType {
+  FIXED
+  HOURLY
+}
+
+enum ProjectStatus {
+  OPEN
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+model Bid {
+  id             String    @id @default(cuid())
+  amount         Float
+  coverLetter    String?
+  estimatedHours Int?
+  freelancerId   String
+  projectId      String
+  status         BidStatus @default(PENDING)
+  createdAt      DateTime  @default(now())
+
+  freelancer User    @relation("SubmittedBids", fields: [freelancerId], references: [id])
+  project    Project @relation(fields: [projectId], references: [id])
+
+  @@unique([freelancerId, projectId])
+  @@index([projectId, status])
+  @@map("bids")
+}
+
+enum BidStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
+model Contract {
+  id           String         @id @default(cuid())
+  projectId    String         @unique
+  freelancerId String
+  clientId     String
+  amount       Float
+  status       ContractStatus @default(ACTIVE)
+  startedAt    DateTime       @default(now())
+  endedAt      DateTime?
+
+  project      Project       @relation(fields: [projectId], references: [id])
+  freelancer   User          @relation("FreelancerContracts", fields: [freelancerId], references: [id])
+  client       User          @relation("ClientContracts", fields: [clientId], references: [id])
+  milestones   Milestone[]
+  transactions Transaction[]
+  reviews      Review[]      @relation("ContractReviews")
+
+  @@index([status])
+  @@map("contracts")
+}
+
+enum ContractStatus {
+  ACTIVE
+  COMPLETED
+  DISPUTED
+  TERMINATED
+}
+
+model Milestone {
+  id          String          @id @default(cuid())
+  title       String
+  description String?
+  amount      Float
+  status      MilestoneStatus @default(PENDING)
+  contractId  String
+  dueDate     DateTime?
+  completedAt DateTime?
+
+  contract  Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  project   Project  @relation("ProjectMilestones", fields: [projectId], references: [id])
+  projectId String
+
+  @@index([contractId, status])
+  @@map("milestones")
+}
+
+enum MilestoneStatus {
+  PENDING
+  IN_REVIEW
+  APPROVED
+  RELEASED
+  REJECTED
+}
+
+model Review {
+  id         String   @id @default(cuid())
+  rating     Int
+  comment    String?
+  reviewerId String
+  reviewedId String
+  projectId  String?
+  contractId String?
+  createdAt  DateTime @default(now())
+
+  reviewer User      @relation("GivenReviews", fields: [reviewerId], references: [id])
+  reviewed User      @relation("ReceivedReviews", fields: [reviewedId], references: [id])
+  project  Project?  @relation("ProjectReviews", fields: [projectId], references: [id])
+  contract Contract? @relation("ContractReviews", fields: [contractId], references: [id])
+
+  @@index([reviewedId])
+  @@map("reviews")
+}
+
+model Transaction {
+  id         String            @id @default(cuid())
+  type       TransactionType
+  amount     Float
+  fee        Float             @default(0)
+  status     TransactionStatus @default(PENDING)
+  userId     String
+  contractId String?
+  createdAt  DateTime          @default(now())
+
+  user     User      @relation(fields: [userId], references: [id])
+  contract Contract? @relation(fields: [contractId], references: [id])
+
+  @@index([status])
+  @@map("transactions")
+}
+
+enum TransactionType {
+  DEPOSIT
+  WITHDRAWAL
+  PAYMENT
+  REFUND
+  FEE
+}
+
+enum TransactionStatus {
+  PENDING
+  COMPLETED
+  FAILED
+}
+
+model Wallet {
+  id      String @id @default(cuid())
+  userId  String @unique
+  balance Float  @default(0)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("wallets")
+}
