@@ -3,7 +3,6 @@
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 generator client {
@@ -141,7 +140,7 @@ model Job {
   @@index([status])
   @@index([category])
   @@index([createdAt])
-  @@fulltext([title, description])
+  //@@fulltext([title, description])
 }
 
 model Bid {
@@ -318,6 +317,8 @@ enum ContractStatus {
   COMPLETED
   CANCELLED
   PAUSED
+  DISPUTED
+  TERMINATED
 }
 
 enum PaymentStatus {
