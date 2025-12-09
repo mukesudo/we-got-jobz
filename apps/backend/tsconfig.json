@@ -1,4 +1,10 @@
 {
+  "include": [
+      "src/**/*",
+      "../..//packages/common/src/**/*",
+      "../../packages/db/src/**/*"
+    ],
+    "exclude": ["node_modules", "dist", "test", "**/*spec.ts"],
   "compilerOptions": {
     "module": "nodenext",
     "moduleResolution": "nodenext",
@@ -14,6 +20,10 @@
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./",
+    "paths": {
+      "@we-got-jobz/common/*": ["../../packages/common/src/*"],
+      "@we-got-jobz/db/*": ["../../packages/db/src/*"]
+    },
     "incremental": true,
     "skipLibCheck": true,
     "strictNullChecks": true,

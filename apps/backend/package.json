@@ -27,6 +27,7 @@
     "@prisma/client": "^7.0.1",
     "@thallesp/nestjs-better-auth": "^2.2.0",
     "@we-got-jobz/db": "workspace:^",
+    "@we-got-jobz/common": "workspace:^",
     "better-auth": "^1.4.5",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1"
