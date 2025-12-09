@@ -1,5 +1,5 @@
 {
-  "name": "common",
+  "name": "@we-got-jobz/common",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -10,10 +10,13 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "zod": "^4.1.13"
+    "zod": "^4.1.13",
+    "@we-got-jobz/db": "workspace:^",
+    "better-auth": "^1.4.5"
   },
   "devDependencies": {
     "@types/node": "^24.10.1",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "@we-got-jobz/typescript-config": "workspace:^"
   }
 }
