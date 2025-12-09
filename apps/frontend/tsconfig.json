@@ -1,6 +1,10 @@
 {
   "extends": "@we-got-jobz/typescript-config/nextjs.json",
   "compilerOptions": {
+    "baseUrl": "src",
+    "paths": {
+      "@/*": ["*"]
+    },
     "plugins": [
       {
         "name": "next"
