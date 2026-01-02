@@ -1,8 +1,13 @@
 import { Controller, Get } from '@nestjs/common';
-import { Session, UserSession, AllowAnonymous, OptionalAuth } from '@thallesp/nestjs-better-auth';
+import {
+  Session,
+  AllowAnonymous,
+  OptionalAuth,
+} from '@thallesp/nestjs-better-auth';
+import type { UserSession } from '@thallesp/nestjs-better-auth';
 
-@Controller('users')
-export class UserController {
+@Controller('auth')
+export class AuthController {
   @Get('me')
   async getProfile(@Session() session: UserSession) {
     return { user: session.user };

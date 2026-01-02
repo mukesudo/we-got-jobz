@@ -1,7 +1,7 @@
 {
   "include": [
       "src/**/*",
-      "../..//packages/common/src/**/*",
+      "../../packages/common/src/**/*",
       "../../packages/db/src/**/*"
     ],
     "exclude": ["node_modules", "dist", "test", "**/*spec.ts"],
@@ -21,8 +21,10 @@
     "outDir": "./dist",
     "baseUrl": "./",
     "paths": {
-      "@we-got-jobz/common/*": ["../../packages/common/src/*"],
-      "@we-got-jobz/db/*": ["../../packages/db/src/*"]
+      "@we-got-jobz/db": ["../../packages/db/src"],
+      "@we-got-jobz/db/*": ["../../packages/db/src/*"],
+      "@we-got-jobz/common": ["../../packages/common/src"],
+      "@we-got-jobz/common/*": ["../../packages/common/src/*"]
     },
     "incremental": true,
     "skipLibCheck": true,

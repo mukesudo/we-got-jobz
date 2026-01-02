@@ -12,8 +12,8 @@
   },
   "dependencies": {
     "@tanstack/react-query": "^5.90.12",
-    "@we-got-jobz/ui": "workspace:*",
     "@we-got-jobz/common": "workspace:^",
+    "@we-got-jobz/ui": "workspace:*",
     "axios": "^1.13.2",
     "better-auth": "^1.4.5",
     "next": "^16.0.7",
@@ -22,6 +22,7 @@
     "zod": "^4.1.13"
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.17",
     "@types/node": "^22.15.3",
     "@types/react": "19.2.2",
     "@types/react-dom": "19.2.2",

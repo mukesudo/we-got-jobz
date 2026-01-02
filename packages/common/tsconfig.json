@@ -2,7 +2,13 @@
   "extends": "@we-got-jobz/typescript-config/base.json",
   "compilerOptions": {
     "outDir": "./dist",
-    "rootDir": "./src"
+    "rootDir": "./src",
+    "paths": {
+    "@we-got-jobz/db": ["../../packages/db/src"],
+    "@we-got-jobz/db/*": ["../../packages/db/src/*"],
+    "@we-got-jobz/common": ["../../packages/common/src"],
+    "@we-got-jobz/common/*": ["../../packages/common/src/*"]
+}
   },
   "include": ["src"]
 }
