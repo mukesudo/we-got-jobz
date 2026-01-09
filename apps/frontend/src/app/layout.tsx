@@ -4,13 +4,14 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { Providers } from '@/components/providers';
-import { Navbar } from '@/components/layout/navbar';
+import  Navbar  from '@/components/layout/navbar';
+import Footer from '@/components/layout/footer';
 import './globals.css';
 
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'We-got-jobz - Hire Talented Freelancers',
+  title: 'We got jobz - Hire Talented Freelancers',
   description: 'Connect with top-rated freelancers and complete your projects on time. Post jobs, receive bids, and manage contracts seamlessly.',
   keywords: 'freelance, marketplace, hire, projects, freelancers',
   robots: 'index, follow',
@@ -39,7 +40,7 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const health = await getHealth();
+  // const health = await getHealth();
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -48,12 +49,15 @@ export default async function RootLayout({
         <link rel="canonical" href={process.env.NEXT_PUBLIC_APP_URL} />
       </head>
       <body className={inter.className}>
-        <pre>{JSON.stringify(health, null, 2)}</pre>
+        {/* <pre>{JSON.stringify(health, null, 2)}</pre> ** */}
         <Providers>
-          <Navbar />
-          <main className="min-h-screen">
-            {children}
-          </main>
+          <div className="flex flex-col min-h-screen">
+            <Navbar />
+            <main className="flex-grow">
+              {children}
+            </main>
+            <Footer />
+          </div>
         </Providers>
       </body>
     </html>

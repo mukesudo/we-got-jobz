@@ -1,106 +1,101 @@
-import Image, { type ImageProps } from "next/image";
-import { Button } from "@we-got-jobz/ui/button";
-import styles from "./page.module.css";
-import { DebugBackend } from "@/components/debug-backend";
+import { Button } from "@/components/ui/button";
+import { ArrowRight, Briefcase, DollarSign, Search, ShieldCheck } from "lucide-react";
+import Link from "next/link";
 
-type Props = Omit<ImageProps, "src"> & {
-  srcLight: string;
-  srcDark: string;
-};
-
-
-const ThemeImage = (props: Props) => {
-  const { srcLight, srcDark, ...rest } = props;
-
+export default function LandingPage() {
   return (
-    <>
-      <Image {...rest} src={srcLight} className="imgLight" />
-      <Image {...rest} src={srcDark} className="imgDark" />
-    </>
-  );
-};
+    <div className="flex flex-col min-h-screen">
+      <main className="flex-grow">
+        {/* Hero Section */}
+        <section className="bg-background text-foreground py-20 md:py-32">
+          <div className="container mx-auto px-4 text-center">
+            <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-4">
+              Find Your Next Great Hire, or Your Next Great Gig
+            </h1>
+            <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
+              We connect top-tier freelance talent with innovative companies. Whether you're looking to hire experts or find your next project, your search ends here.
+            </p>
+            <div className="flex justify-center gap-4">
+              <Button asChild size="lg">
+                <Link href="/marketplace/jobs">
+                  Find a Job <ArrowRight className="ml-2 h-5 w-5" />
+                </Link>
+              </Button>
+              <Button asChild size="lg" variant="secondary">
+                <Link href="/jobs/create">
+                  Post a Job
+                </Link>
+              </Button>
+            </div>
+          </div>
+        </section>
 
-export default function Home() {
-  return (
-    
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <DebugBackend />
-        <ThemeImage
-          className={styles.logo}
-          srcLight="turborepo-dark.svg"
-          srcDark="turborepo-light.svg"
-          alt="Turborepo logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>apps/web/app/page.tsx</code>
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+        {/* How It Works Section */}
+        <section className="py-16 md:py-24 bg-secondary">
+          <div className="container mx-auto px-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">How It Works</h2>
+            <div className="grid md:grid-cols-3 gap-8 text-center">
+              <div className="flex flex-col items-center">
+                <div className="bg-primary text-primary-foreground rounded-full p-4 mb-4">
+                  <Briefcase className="h-8 w-8" />
+                </div>
+                <h3 className="text-xl font-semibold mb-2">1. Post a Job</h3>
+                <p className="text-muted-foreground">
+                  Clients post their project requirements, and our platform instantly notifies relevant freelancers.
+                </p>
+              </div>
+              <div className="flex flex-col items-center">
+                <div className="bg-primary text-primary-foreground rounded-full p-4 mb-4">
+                  <Search className="h-8 w-8" />
+                </div>
+                <h3 className="text-xl font-semibold mb-2">2. Find & Hire Talent</h3>
+                <p className="text-muted-foreground">
+                  Browse profiles, review proposals, and hire the perfect candidate for your project.
+                </p>
+              </div>
+              <div className="flex flex-col items-center">
+                <div className="bg-primary text-primary-foreground rounded-full p-4 mb-4">
+                  <DollarSign className="h-8 w-8" />
+                </div>
+                <h3 className="text-xl font-semibold mb-2">3. Work & Get Paid</h3>
+                <p className="text-muted-foreground">
+                  Collaborate seamlessly and get paid securely through our escrow-powered payment system.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
 
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new/clone?demo-description=Learn+to+implement+a+monorepo+with+a+two+Next.js+sites+that+has+installed+three+local+packages.&demo-image=%2F%2Fimages.ctfassets.net%2Fe5382hct74si%2F4K8ZISWAzJ8X1504ca0zmC%2F0b21a1c6246add355e55816278ef54bc%2FBasic.png&demo-title=Monorepo+with+Turborepo&demo-url=https%3A%2F%2Fexamples-basic-web.vercel.sh%2F&from=templates&project-name=Monorepo+with+Turborepo&repository-name=monorepo-turborepo&repository-url=https%3A%2F%2Fgithub.com%2Fvercel%2Fturborepo%2Ftree%2Fmain%2Fexamples%2Fbasic&root-directory=apps%2Fdocs&skippable-integrations=1&teamSlug=vercel&utm_source=create-turbo"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://turborepo.com/docs?utm_source"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
-        </div>
-        <Button appName="web" className={styles.secondary}>
-          Open alert
-        </Button>
+        {/* Features Section */}
+        <section className="py-16 md:py-24 bg-background">
+          <div className="container mx-auto px-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">Why Choose Us?</h2>
+            <div className="grid md:grid-cols-3 gap-8">
+              <div className="p-6 border rounded-lg">
+                <ShieldCheck className="h-10 w-10 text-primary mb-4" />
+                <h3 className="text-xl font-semibold mb-2">Secure Payments</h3>
+                <p className="text-muted-foreground">
+                  With our escrow system, your funds are held safely until the work is completed and approved.
+                </p>
+              </div>
+              <div className="p-6 border rounded-lg">
+                 <Search className="h-10 w-10 text-primary mb-4" />
+                <h3 className="text-xl font-semibold mb-2">Vetted Talent</h3>
+                <p className="text-muted-foreground">
+                  Access a pool of pre-screened professionals with verified skills and work history.
+                </p>
+              </div>
+              <div className="p-6 border rounded-lg">
+                <Briefcase className="h-10 w-10 text-primary mb-4" />
+                <h3 className="text-xl font-semibold mb-2">All-in-One Platform</h3>
+                <p className="text-muted-foreground">
+                  From job posting to messaging and payments, manage your entire freelance workflow in one place.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
       </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com/templates?search=turborepo&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://turborepo.com?utm_source=create-turbo"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to turborepo.com →
-        </a>
-      </footer>
     </div>
   );
 }

@@ -4,7 +4,7 @@
 import { useEffect, useState } from "react";
 
 export function DebugBackend() {
-  const [data, setData] = useState<any>(null);
+  const [data, setData] = useState<Record<string, unknown> | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -16,8 +16,8 @@ export function DebugBackend() {
         );
         if (!res.ok) throw new Error(`Status ${res.status}\nUrl ${process.env.NEXT_PUBLIC_API_URL}`);
         setData(await res.json());
-      } catch (e: any) {
-        setError(e.message);
+      } catch (e) {
+        setError(e instanceof Error ? e.message : String(e));
       }
     }
     run();

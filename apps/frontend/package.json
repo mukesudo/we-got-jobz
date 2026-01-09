@@ -11,18 +11,27 @@
     "check-types": "next typegen && tsc --noEmit"
   },
   "dependencies": {
+    "@radix-ui/react-slot": "^1.0.2",
     "@tanstack/react-query": "^5.90.12",
     "@we-got-jobz/common": "workspace:^",
     "@we-got-jobz/ui": "workspace:*",
     "axios": "^1.13.2",
     "better-auth": "^1.4.5",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.395.0",
     "next": "^16.0.7",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
-    "zod": "^4.1.13"
+    "tailwind-merge": "^2.3.0",
+    "tailwindcss-animate": "^1.0.7",
+    "zod": "^4.1.13",
+    "@radix-ui/react-label": "^1.0.0",
+    "@radix-ui/react-radio-group": "^1.0.0",
+    "@radix-ui/react-select": "^1.0.0"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4.1.17",
+    "@tailwindcss/typography": "^0.5.13",
     "@types/node": "^22.15.3",
     "@types/react": "19.2.2",
     "@types/react-dom": "19.2.2",
@@ -31,7 +40,7 @@
     "autoprefixer": "^10.4.22",
     "eslint": "^9.39.1",
     "postcss": "^8.5.6",
-    "tailwindcss": "^4.1.17",
+    "tailwindcss": "^3.4.1",
     "typescript": "5.9.2"
   }
 }

@@ -1,7 +1,8 @@
-import { nextJsConfig } from "@we-got-jobz/eslint-config/next-js";
+/* eslint-disable @typescript-eslint/no-require-imports, no-undef */
+const { nextJsConfig } = require("@we-got-jobz/eslint-config/next-js");
 
 /** @type {import("eslint").Linter.Config[]} */
-export default [
+module.exports = [
   ...nextJsConfig,
   {
     files: ['tailwind.config.js', 'postcss.config.js'],
