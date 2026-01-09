@@ -9,19 +9,19 @@ import type { UserSession } from '@thallesp/nestjs-better-auth';
 @Controller('auth')
 export class AuthController {
   @Get('me')
-  async getProfile(@Session() session: UserSession) {
+  getProfile(@Session() session: UserSession) {
     return { user: session.user };
   }
 
   @Get('public')
   @AllowAnonymous() // Allow anonymous access
-  async getPublic() {
+  getPublic() {
     return { message: 'Public route' };
   }
 
   @Get('optional')
   @OptionalAuth() // Authentication is optional
-  async getOptional(@Session() session: UserSession) {
+  getOptional(@Session() session: UserSession) {
     return { authenticated: !!session };
   }
 }

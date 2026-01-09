@@ -1,9 +1,25 @@
 {
+  "preset": "ts-jest/presets/default-esm",
+  "globals": {
+    "ts-jest": {
+      "useESM": true
+    }
+  },
   "moduleFileExtensions": ["js", "json", "ts"],
+  "extensionsToTreatAsEsm": [".ts"],
   "rootDir": ".",
   "testEnvironment": "node",
   "testRegex": ".e2e-spec.ts$",
   "transform": {
-    "^.+\\.(t|j)s$": "ts-jest"
+    "^.+\\.(t|j)s$": "ts-jest",
+    "^.+\\.mjs$": "ts-jest"
+  },
+  "transformIgnorePatterns": [
+    "node_modules/(?!(better-auth|@thallesp)/)"
+  ],
+  "moduleNameMapper": {
+    "^@thallesp/nestjs-better-auth$": "<rootDir>/__mocks__/@thallesp-nestjs-better-auth.js",
+    "^better-auth$": "<rootDir>/__mocks__/better-auth.js",
+    "^better-auth/(.*)$": "<rootDir>/__mocks__/better-auth.js"
   }
 }

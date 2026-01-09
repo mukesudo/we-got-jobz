@@ -24,6 +24,7 @@
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.0.1",
+    "@nestjs/mapped-types": "^2.1.0",
     "@nestjs/platform-express": "^11.0.1",
     "@prisma/adapter-pg": "^7.1.0",
     "@prisma/client": "^7.1.0",
@@ -32,6 +33,8 @@
     "@we-got-jobz/common": "workspace:^",
     "@we-got-jobz/db": "workspace:^",
     "better-auth": "^1.4.5",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.3",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1"
   },
@@ -62,15 +65,30 @@
     "typescript-eslint": "^8.20.0"
   },
   "jest": {
+    "preset": "ts-jest/presets/default-esm",
+    "globals": {
+      "ts-jest": {
+        "useESM": true
+      }
+    },
     "moduleFileExtensions": [
       "js",
       "json",
       "ts"
     ],
+    "extensionsToTreatAsEsm": [".ts"],
     "rootDir": "src",
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
-      "^.+\\.(t|j)s$": "ts-jest"
+      "^.+\\\\.(t|j)s$": "ts-jest",
+      "^.+\\\\.mjs$": "ts-jest"
+    },
+    "transformIgnorePatterns": [
+      "node_modules/(?!(better-auth|@thallesp)/)"
+    ],
+    "moduleNameMapper": {
+      "^@thallesp/nestjs-better-auth$": "<rootDir>/../test/__mocks__/@thallesp-nestjs-better-auth.js",
+      "^better-auth$": "<rootDir>/../test/__mocks__/better-auth.mjs"
     },
     "collectCoverageFrom": [
       "**/*.(t|j)s"

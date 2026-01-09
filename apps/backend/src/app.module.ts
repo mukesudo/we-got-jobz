@@ -7,15 +7,28 @@ import { AuthGuard, AuthModule } from '@thallesp/nestjs-better-auth';
 import { PrismaModule } from './prisma/prisma.module';
 import { AppService } from './app.service';
 import { auth } from './auth/config'; // your Better Auth config
+import { JobsModule } from './jobs/jobs.module';
+import { TalentModule } from './talent/talent.module';
+import { ProposalsModule } from './proposals/proposals.module';
+import { ContractsModule } from './contracts/contracts.module';
+import { BidsModule } from './bids/bids.module';
+import { ProfilesModule } from './profiles/profiles.module';
 
 @Module({
-  imports: [PrismaModule,
+  imports: [
+    PrismaModule,
     AuthModule.forRoot({ auth }),
     LocalAuthModule,
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env', // or an array if you want .env.local too
     }),
+    JobsModule,
+    TalentModule,
+    ProposalsModule,
+    ContractsModule,
+    BidsModule,
+    ProfilesModule,
   ],
   controllers: [AppController],
   providers: [

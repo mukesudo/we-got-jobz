@@ -1,0 +1,112 @@
+# Default values for freelance-marketplace Helm chart
+replicaCount: 3
+
+image:
+  registry: ghcr.io
+  repository: yourusername/freelance-marketplace
+  tag: latest
+  pullPolicy: Always
+
+backend:
+  replicaCount: 3
+  image:
+    repository: yourusername/freelance-marketplace/backend
+  service:
+    type: ClusterIP
+    port: 3000
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: 500m
+      memory: 1Gi
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 70
+    targetMemoryUtilizationPercentage: 80
+
+frontend:
+  replicaCount: 3
+  image:
+    repository: yourusername/freelance-marketplace/frontend
+  service:
+    type: ClusterIP
+    port: 3001
+  resources:
+    requests:
+      cpu: 250m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 70
+
+postgres:
+  enabled: true
+  image:
+    repository: postgres
+    tag: 16-alpine
+  persistence:
+    size: 20Gi
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1Gi
+    limits:
+      cpu: 1000m
+      memory: 2Gi
+
+redis:
+  enabled: true
+  image:
+    repository: redis
+    tag: 7-alpine
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+ingress:
+  enabled: true
+  className: nginx
+  hosts:
+    - host: yourdomain.com
+      paths:
+        - path: /
+          pathType: Prefix
+          backend: frontend
+    - host: api.yourdomain.com
+      paths:
+        - path: /
+          pathType: Prefix
+          backend: backend
+  tls:
+    enabled: true
+    issuer: letsencrypt-prod
+
+monitoring:
+  enabled: true
+  prometheus:
+    enabled: true
+    retention: 15d
+  grafana:
+    enabled: true
+    adminPassword: admin
+  loki:
+    enabled: true
+
+secrets:
+  databaseUrl: postgresql://postgres:postgres@postgres:5432/marketplace
+  redisUrl: redis://redis:6379
+  jwtSecret: your-jwt-secret-key
+  stripeSecret: sk_test_your_stripe_key

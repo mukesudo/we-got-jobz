@@ -238,6 +238,17 @@ exports.Prisma.TransactionScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.MessageScalarFieldEnum = {
+  id: 'id',
+  content: 'content',
+  senderId: 'senderId',
+  receiverId: 'receiverId',
+  projectId: 'projectId',
+  contractId: 'contractId',
+  isRead: 'isRead',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.WalletScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
@@ -323,6 +334,7 @@ exports.Prisma.ModelName = {
   Milestone: 'Milestone',
   Review: 'Review',
   Transaction: 'Transaction',
+  Message: 'Message',
   Wallet: 'Wallet'
 };
 
