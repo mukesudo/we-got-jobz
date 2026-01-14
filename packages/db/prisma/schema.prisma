@@ -1,7 +1,8 @@
 // packages/db/prisma/schema.prisma
+
 generator client {
-  provider = "prisma-client-js"
-  output   = "../generated/client"
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
 }
 
 datasource db {
@@ -11,7 +12,7 @@ datasource db {
 model User {
   id            String    @id @default(cuid())
   email         String    @unique
-  emailVerified DateTime?
+  emailVerified Boolean   @default(false)
   name          String?
   image         String?
   role          UserRole  @default(CLIENT)
@@ -28,9 +29,11 @@ model User {
   reviewsReceived       Review[]           @relation("ReceivedReviews")
   reviewsGiven          Review[]           @relation("GivenReviews")
   transactions          Transaction[]
-  wallet                Wallet?           @relation("UserWallet")
+  wallet                Wallet?            @relation("UserWallet")
   sentMessages          Message[]          @relation("SentMessages")
   receivedMessages      Message[]          @relation("ReceivedMessages")
+  accounts              Account[]
+  sessions              Session[]
 
   @@index([email])
   @@map("users")
@@ -40,6 +43,46 @@ enum UserRole {
   CLIENT
   FREELANCER
   ADMIN
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  accountId             String
+  providerId            String
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@unique([providerId, accountId])
+  @@index([userId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  userId       String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  expiresAt DateTime
+  token     String
+  ipAddress String?
+  userAgent String?
+
+  @@index([userId])
+  @@map("sessions")
+  @@unique([token])
 }
 
 model FreelancerProfile {
@@ -279,8 +322,8 @@ model Message {
   isRead     Boolean  @default(false)
   createdAt  DateTime @default(now())
 
-  sender   User      @relation("SentMessages", fields: [senderId], references: [id])
-  receiver User      @relation("ReceivedMessages", fields: [receiverId], references: [id])
+  sender   User @relation("SentMessages", fields: [senderId], references: [id])
+  receiver User @relation("ReceivedMessages", fields: [receiverId], references: [id])
 
   @@index([receiverId, isRead])
   @@index([projectId])
@@ -296,4 +339,16 @@ model Wallet {
 
   @@index([userId])
   @@map("wallets")
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+  @@map("verification")
 }

@@ -1,2 +1,5 @@
-export * from '@prisma/client';
-export { prisma } from './client';
+import { prisma } from './client';
+import * as Prisma from '@prisma/client';
+
+export type PrismaClient = typeof prisma;
+export { prisma, Prisma };
