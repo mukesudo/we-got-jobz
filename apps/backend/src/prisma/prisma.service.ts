@@ -1,25 +1,56 @@
 import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
-import { PrismaClient } from '@we-got-jobz/db';
-import { PrismaPg } from '@prisma/adapter-pg';
+import { PrismaClient, prisma } from '@we-got-jobz/db';
 
 @Injectable()
-export class PrismaService
-  extends PrismaClient
-  implements OnModuleInit, OnModuleDestroy
-{
-  constructor() {
-    const adapter = new PrismaPg({
-      connectionString: process.env.DATABASE_URL!,
-    });
+export class PrismaService implements OnModuleInit, OnModuleDestroy {
+  private prisma: PrismaClient;
 
-    super({ adapter });
+  constructor() {
+    this.prisma = prisma; // Assign the globally available prisma instance
   }
 
   async onModuleInit() {
-    await this.$connect();
+    await this.prisma.$connect();
   }
 
   async onModuleDestroy() {
-    await this.$disconnect();
+    await this.prisma.$disconnect();
+  }
+
+  // Expose the prisma client methods
+  get bid() {
+    return this.prisma.bid;
+  }
+
+  get project() {
+    return this.prisma.project;
+  }
+
+  get message() {
+    return this.prisma.message;
+  }
+
+  get transaction() {
+    return this.prisma.transaction;
+  }
+
+  get contract() {
+    return this.prisma.contract;
+  }
+
+  get freelancerProfile() {
+    return this.prisma.freelancerProfile;
+  }
+
+  get clientProfile() {
+    return this.prisma.clientProfile;
+  }
+
+  get user() {
+    return this.prisma.user;
+  }
+
+  get $transaction() {
+    return this.prisma.$transaction;
   }
 }

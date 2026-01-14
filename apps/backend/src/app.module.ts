@@ -12,13 +12,14 @@ import { TalentModule } from './talent/talent.module';
 import { ProposalsModule } from './proposals/proposals.module';
 import { ContractsModule } from './contracts/contracts.module';
 import { BidsModule } from './bids/bids.module';
+import { AdminModule } from './admin/admin.module';
 import { ProfilesModule } from './profiles/profiles.module';
 
 @Module({
   imports: [
-    PrismaModule,
     AuthModule.forRoot({ auth }),
     LocalAuthModule,
+    PrismaModule,
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env', // or an array if you want .env.local too
@@ -29,6 +30,7 @@ import { ProfilesModule } from './profiles/profiles.module';
     ContractsModule,
     BidsModule,
     ProfilesModule,
+    AdminModule,
   ],
   controllers: [AppController],
   providers: [
