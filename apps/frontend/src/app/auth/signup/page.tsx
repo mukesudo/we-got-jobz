@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { signUp } from '@/lib/auth-client';
+import { signUp, signIn } from '@/lib/auth-client';
 import { Button } from '@/components/ui/button';
 
 export default function SignupPage() {
@@ -140,6 +140,35 @@ export default function SignupPage() {
               {isLoading ? 'Creating account...' : 'Sign up'}
             </Button>
           </form>
+
+          <div className="mt-6 text-center text-sm text-gray-600">
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-300" />
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="bg-white px-2 text-gray-500">
+                  Or continue with
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-6">
+            <Button
+              variant="outline"
+              className="w-full flex items-center justify-center gap-2"
+              onClick={async () => {
+                await signIn.social({
+                  provider: 'google',
+                  callbackURL: '/marketplace/jobs',
+                });
+              }}
+            >
+              <img src="/google-icon.svg" alt="Google" className="h-5 w-5" />
+              Sign up with Google
+            </Button>
+          </div>
 
           <p className="mt-4 text-center text-sm text-gray-600">
             Already have an account?{' '}

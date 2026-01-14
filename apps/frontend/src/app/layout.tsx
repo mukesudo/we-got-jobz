@@ -1,9 +1,6 @@
-// Next.js 15 Frontend Layout & Auth Setup
-
 
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import { Providers } from '@/components/providers';
 import  Navbar  from '@/components/layout/navbar';
 import Footer from '@/components/layout/footer';
 import './globals.css';
@@ -27,20 +24,12 @@ export const metadata: Metadata = {
     description: 'Connect with top-rated freelancers for your projects',
   },
 };
-async function getHealth() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://automatic-barnacle-7pjx99qqxx4fxjrv-3000.app.github.dev'}/health`, {
-    cache: "no-store",
-  });
-  return res.json();
-}
-
 
 export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  // const health = await getHealth();
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -49,8 +38,6 @@ export default async function RootLayout({
         <link rel="canonical" href={process.env.NEXT_PUBLIC_APP_URL} />
       </head>
       <body className={inter.className}>
-        {/* <pre>{JSON.stringify(health, null, 2)}</pre> ** */}
-        <Providers>
           <div className="flex flex-col min-h-screen">
             <Navbar />
             <main className="flex-grow">
@@ -58,7 +45,6 @@ export default async function RootLayout({
             </main>
             <Footer />
           </div>
-        </Providers>
       </body>
     </html>
   );

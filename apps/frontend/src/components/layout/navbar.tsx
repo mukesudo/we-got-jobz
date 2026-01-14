@@ -6,7 +6,7 @@ import { useSession, signOut } from '@/lib/auth-client';
 
 
 export default function Navbar() {
-  const { session: session } = useSession();
+  const { data: session } = useSession();
   const [isOpen, setIsOpen] = React.useState(false);
 
   const handleSignOut = async () => {
@@ -49,6 +49,12 @@ export default function Navbar() {
                     </svg>
                   </button>
                   <div className="absolute hidden group-hover:block right-0 w-48 bg-white shadow-lg rounded-lg py-2 z-10">
+                    <Link href={`/marketplace/profile/${session.user.id}`} className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100">
+                      Profile
+                    </Link>
+                    <Link href="/marketplace/settings" className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100">
+                      Settings
+                    </Link>
                     <button
                       onClick={handleSignOut}
                       className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
@@ -94,6 +100,9 @@ export default function Navbar() {
                 </Link>
                 <Link href="/marketplace/dashboard" className="block px-3 py-2 text-gray-700 hover:bg-gray-100">
                   Dashboard
+                </Link>
+                <Link href={`/marketplace/profile/${session.user.id}`} className="block px-3 py-2 text-gray-700 hover:bg-gray-100">
+                  Profile
                 </Link>
                 <button
                   onClick={handleSignOut}

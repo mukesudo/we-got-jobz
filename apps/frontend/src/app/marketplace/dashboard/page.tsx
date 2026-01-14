@@ -1,89 +1,66 @@
-'use client';
-
-import React from 'react';
-import { useSession } from '@/lib/auth-client';
-import Navbar from '@/components/layout/navbar';
+import { Card } from "@/components/ui/card";
+import { DollarSign, Users, Briefcase, Bell } from "lucide-react";
+import Link from "next/link";
 
 export default function DashboardPage() {
-  const { session } = useSession();
-  const [stats, setStats] = React.useState<Record<string, unknown> | null>(null);
-  const [isLoading, setIsLoading] = React.useState(true);
-
-  React.useEffect(() => {
-    if (!session?.user) return;
-
-    const fetchStats = async () => {
-      try {
-        const response = await fetch('/api/dashboard/stats');
-        if (response.ok) {
-          const data = await response.json();
-          setStats(data);
-        }
-      } catch (error) {
-        console.error('Failed to fetch stats:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchStats();
-  }, [session]);
-
-  if (!session?.user) {
-    return (
-      <>
-        <Navbar />
-        <div className="min-h-screen bg-gray-50 py-12">
-          <div className="text-center">
-            <p className="text-gray-600">Please log in to view your dashboard</p>
-          </div>
-        </div>
-      </>
-    );
-  }
+  const stats = [
+    { title: "Revenue", value: "$4,050", icon: <DollarSign /> },
+    { title: "Active Bids", value: "12", icon: <Briefcase /> },
+    { title: "New Messages", value: "3", icon: <Bell /> },
+    { title: "Active Clients", value: "5", icon: <Users /> },
+  ];
 
   return (
-    <>
-      <Navbar />
-      <div className="min-h-screen bg-gray-50">
-        <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-          <div className="mb-8">
-            <h1 className="text-4xl font-bold text-gray-900">Dashboard</h1>
-            <p className="mt-2 text-lg text-gray-600">
-              Welcome back, {session.user.name || session.user.email}
-            </p>
-          </div>
-
-          {isLoading ? (
-            <div className="text-center py-12">
-              <p className="text-gray-600">Loading dashboard...</p>
+    <div className="container mx-auto py-8 px-4 md:px-6">
+      <h1 className="text-3xl font-bold mb-6">Dashboard</h1>
+      
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        {stats.map((stat, index) => (
+          <Card key={index} className="p-6 flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-muted-foreground">{stat.title}</p>
+              <p className="text-2xl font-bold">{stat.value}</p>
             </div>
-          ) : (
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-              {/* Stats cards */}
-              <div className="bg-white rounded-lg shadow p-6">
-                <h3 className="text-sm font-medium text-gray-500 uppercase">Active Projects</h3>
-                <p className="text-3xl font-bold text-gray-900 mt-2">{typeof stats?.activeProjects === 'number' ? stats.activeProjects : 0}</p>
-              </div>
-
-              <div className="bg-white rounded-lg shadow p-6">
-                <h3 className="text-sm font-medium text-gray-500 uppercase">Total Earnings</h3>
-                <p className="text-3xl font-bold text-gray-900 mt-2">${typeof stats?.totalEarnings === 'number' ? stats.totalEarnings : 0}</p>
-              </div>
-
-              <div className="bg-white rounded-lg shadow p-6">
-                <h3 className="text-sm font-medium text-gray-500 uppercase">Completed Jobs</h3>
-                <p className="text-3xl font-bold text-gray-900 mt-2">{typeof stats?.completedJobs === 'number' ? stats.completedJobs : 0}</p>
-              </div>
-
-              <div className="bg-white rounded-lg shadow p-6">
-                <h3 className="text-sm font-medium text-gray-500 uppercase">Rating</h3>
-                <p className="text-3xl font-bold text-gray-900 mt-2">{typeof stats?.rating === 'number' ? stats.rating : 'N/A'}</p>
-              </div>
+            <div className="bg-primary text-primary-foreground p-3 rounded-full">
+              {stat.icon}
             </div>
-          )}
+          </Card>
+        ))}
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="md:col-span-2">
+          <h2 className="text-2xl font-bold mb-4">Recent Activity</h2>
+          <Card className="p-6">
+            <ul>
+              <li className="flex justify-between items-center py-3 border-b">
+                <span>You placed a bid on "Build a Next.js App"</span>
+                <span className="text-muted-foreground text-sm">2 hours ago</span>
+              </li>
+              <li className="flex justify-between items-center py-3 border-b">
+                <span>Client "Acme Inc" accepted your proposal</span>
+                <span className="text-muted-foreground text-sm">1 day ago</span>
+              </li>
+              <li className="flex justify-between items-center py-3">
+                <span>New message from "John Doe"</span>
+                <span className="text-muted-foreground text-sm">3 days ago</span>
+              </li>
+            </ul>
+          </Card>
+        </div>
+        
+        <div>
+          <h2 className="text-2xl font-bold mb-4">Quick Links</h2>
+          <Card className="p-6">
+            <ul className="space-y-3">
+              <li><Link href="/jobs/create" className="text-primary hover:underline">Post a New Job</Link></li>
+              <li><Link href="/marketplace/jobs" className="text-primary hover:underline">Browse Jobs</Link></li>
+              <li><Link href="/marketplace/profile" className="text-primary hover:underline">Update Profile</Link></li>
+              <li><Link href="/marketplace/settings" className="text-primary hover:underline">Account Settings</Link></li>
+            </ul>
+          </Card>
         </div>
       </div>
-    </>
+    </div>
   );
 }

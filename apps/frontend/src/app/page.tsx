@@ -10,10 +10,10 @@ export default function LandingPage() {
         <section className="bg-background text-foreground py-20 md:py-32">
           <div className="container mx-auto px-4 text-center">
             <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-4">
-              Find Your Next Great Hire, or Your Next Great Gig
+              &quot;Find Your Next Great Hire, or Your Next Great Gig&quot;
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
-              We connect top-tier freelance talent with innovative companies. Whether you're looking to hire experts or find your next project, your search ends here.
+              We connect top-tier freelance talent with innovative companies. Whether you&apos;re looking to hire experts or find your next project, your search ends here.
             </p>
             <div className="flex justify-center gap-4">
               <Button asChild size="lg">

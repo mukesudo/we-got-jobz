@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Briefcase, MapPin, DollarSign, Clock, ShieldCheck } from "lucide-react";
 
 // Placeholder data - we will replace this with a real API call later

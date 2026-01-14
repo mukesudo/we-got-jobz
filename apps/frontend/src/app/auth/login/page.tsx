@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { signIn } from '@/lib/auth-client';
@@ -24,6 +25,7 @@ export default function LoginPage() {
         password,
         callbackURL: '/marketplace/jobs',
       });
+      console.log('Sign-in result:', result);
 
       if (result.error) {
         setError(result.error.message || 'Failed to sign in');
@@ -92,6 +94,35 @@ export default function LoginPage() {
               {isLoading ? 'Signing in...' : 'Sign in'}
             </Button>
           </form>
+
+          <div className="mt-6 text-center text-sm text-gray-600">
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-300" />
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="bg-white px-2 text-gray-500">
+                  Or continue with
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-6">
+            <Button
+              variant="outline"
+              className="w-full flex items-center justify-center gap-2"
+              onClick={async () => {
+                await signIn.social({
+                  provider: 'google',
+                  callbackURL: '/marketplace/jobs',
+                });
+              }}
+            >
+              <Image src="/google-icon.svg" alt="Google" width={20} height={20} />
+              Sign in with Google
+            </Button>
+          </div>
 
           <p className="mt-4 text-center text-sm text-gray-600">
             Don&apos;t have an account?{' '}

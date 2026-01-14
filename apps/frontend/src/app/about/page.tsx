@@ -7,7 +7,7 @@ export default function AboutPage() {
           Welcome to We Got Jobz, the premier marketplace connecting top-tier freelance talent with innovative companies around the globe. Our mission is to bridge the gap between businesses seeking expert skills and professionals looking for meaningful, flexible work.
         </p>
         <p>
-          Founded on the principle that great talent is everywhere, we've built a platform that removes the traditional barriers of hiring. Whether you're a startup looking to build your first product or a large enterprise seeking specialized expertise for a complex project, We Got Jobz provides the tools to connect, collaborate, and succeed.
+          Founded on the principle that great talent is everywhere, we&apos;ve built a platform that removes the traditional barriers of hiring. Whether you&apos;re a startup looking to build your first product or a large enterprise seeking specialized expertise for a complex project, We Got Jobz provides the tools to connect, collaborate, and succeed.
         </p>
         <h2 className="text-2xl font-bold mt-8">Our Vision</h2>
         <p>
