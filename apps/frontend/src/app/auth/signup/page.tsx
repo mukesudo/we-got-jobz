@@ -1,21 +1,61 @@
-'use client';
+"use client";
 
-import React from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { signUp, signIn } from '@/lib/auth-client';
-import { Button } from '@/components/ui/button';
+import React from "react";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import { signUp, signIn } from "@/lib/auth-client";
+import { Button } from "@/components/ui/button";
+import { Github } from "lucide-react";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
 
 export default function SignupPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const returnPath = searchParams.get("callbackURL") || "/marketplace/jobs";
+  const oauthError = searchParams.get("error");
+  const oauthErrorDescription = searchParams.get("error_description");
   const [formData, setFormData] = React.useState({
-    name: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
   });
+  const [role, setRole] = React.useState("CLIENT");
   const [isLoading, setIsLoading] = React.useState(false);
-  const [error, setError] = React.useState('');
+  const [error, setError] = React.useState("");
+
+  const resolvedCallbackURL = React.useMemo(() => {
+    const origin = typeof window !== "undefined"
+      ? window.location.origin
+      : process.env.NEXT_PUBLIC_APP_URL || "";
+    try {
+      return origin ? new URL(returnPath, origin).toString() : returnPath;
+    } catch {
+      return returnPath;
+    }
+  }, [returnPath]);
+
+  const resolvedErrorCallbackURL = React.useMemo(() => {
+    const origin = typeof window !== "undefined"
+      ? window.location.origin
+      : process.env.NEXT_PUBLIC_APP_URL || "";
+    const errorPath = `/auth/signup?callbackURL=${encodeURIComponent(returnPath)}`;
+    try {
+      return origin ? new URL(errorPath, origin).toString() : errorPath;
+    } catch {
+      return errorPath;
+    }
+  }, [returnPath]);
+
+  React.useEffect(() => {
+    if (oauthError) {
+      const message = oauthErrorDescription
+        ? decodeURIComponent(oauthErrorDescription)
+        : decodeURIComponent(oauthError);
+      setError(message);
+    }
+  }, [oauthError, oauthErrorDescription]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -24,10 +64,10 @@ export default function SignupPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    setError("");
 
     if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
+      setError("Passwords do not match");
       return;
     }
 
@@ -38,16 +78,17 @@ export default function SignupPage() {
         email: formData.email,
         password: formData.password,
         name: formData.name,
-        callbackURL: '/marketplace/jobs',
+        role,
+        callbackURL: resolvedCallbackURL,
       });
 
       if (result.error) {
-        setError(result.error.message || 'Failed to sign up');
+        setError(result.error.message || "Failed to sign up");
       } else {
-        router.push('/marketplace/jobs');
+        router.push(returnPath);
       }
     } catch {
-      setError('An error occurred. Please try again.');
+      setError("An error occurred. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -69,7 +110,10 @@ export default function SignupPage() {
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="name"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Full Name
               </label>
               <input
@@ -85,7 +129,10 @@ export default function SignupPage() {
             </div>
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Email address
               </label>
               <input
@@ -101,7 +148,10 @@ export default function SignupPage() {
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Password
               </label>
               <input
@@ -117,7 +167,10 @@ export default function SignupPage() {
             </div>
 
             <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="confirmPassword"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Confirm Password
               </label>
               <input
@@ -132,12 +185,27 @@ export default function SignupPage() {
               />
             </div>
 
-            <Button
-              type="submit"
-              disabled={isLoading}
-              className="w-full"
-            >
-              {isLoading ? 'Creating account...' : 'Sign up'}
+            <div>
+                <Label>I am a:</Label>
+                <RadioGroup
+                    defaultValue="CLIENT"
+                    className="flex items-center gap-4 mt-2"
+                    onValueChange={setRole}
+                    value={role}
+                >
+                    <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="CLIENT" id="client" />
+                        <Label htmlFor="client">Client (Hiring for a project)</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="FREELANCER" id="freelancer" />
+                        <Label htmlFor="freelancer">Freelancer (Looking for work)</Label>
+                    </div>
+                </RadioGroup>
+            </div>
+
+            <Button type="submit" disabled={isLoading} className="w-full">
+              {isLoading ? "Creating account..." : "Sign up"}
             </Button>
           </form>
 
@@ -154,25 +222,43 @@ export default function SignupPage() {
             </div>
           </div>
 
-          <div className="mt-6">
+          <div className="mt-6 space-y-3">
             <Button
               variant="outline"
               className="w-full flex items-center justify-center gap-2"
               onClick={async () => {
                 await signIn.social({
-                  provider: 'google',
-                  callbackURL: '/marketplace/jobs',
+                  provider: "google",
+                  callbackURL: resolvedCallbackURL,
+                  errorCallbackURL: resolvedErrorCallbackURL,
                 });
               }}
             >
               <img src="/google-icon.svg" alt="Google" className="h-5 w-5" />
               Sign up with Google
             </Button>
+            <Button
+              variant="outline"
+              className="w-full flex items-center justify-center gap-2"
+              onClick={async () => {
+                await signIn.social({
+                  provider: "github",
+                  callbackURL: resolvedCallbackURL,
+                  errorCallbackURL: resolvedErrorCallbackURL,
+                });
+              }}
+            >
+              <Github className="w-5 h-5" />
+              Sign up with GitHub
+            </Button>
           </div>
 
           <p className="mt-4 text-center text-sm text-gray-600">
-            Already have an account?{' '}
-            <Link href="/auth/login" className="text-blue-600 hover:text-blue-500 font-medium">
+            Already have an account?{" "}
+            <Link
+              href="/auth/login"
+              className="text-blue-600 hover:text-blue-500 font-medium"
+            >
               Sign in
             </Link>
           </p>

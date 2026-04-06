@@ -2,6 +2,7 @@ import * as dotenv from 'dotenv';
 dotenv.config({ path: '../../.env' }); // Adjust path as necessary, assuming .env is in the project root
 
 import { NestFactory, HttpAdapterHost } from '@nestjs/core';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
@@ -21,6 +22,17 @@ async function bootstrap() {
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     allowedHeaders: 'Content-Type, Authorization',
   });
+
+  const config = new DocumentBuilder()
+    .setTitle('We Got Jobz API')
+    .setDescription('The Freelance Marketplace API documentation')
+    .setVersion('1.0')
+    .addBearerAuth()
+    .build();
+
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api/docs', app, document);
+
   const port = process.env.BACKEND_PORT || 3000;
   await app.listen(port);
   console.log(`🚀 Application is running on: ${await app.getUrl()}`);

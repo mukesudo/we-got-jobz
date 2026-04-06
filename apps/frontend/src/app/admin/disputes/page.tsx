@@ -1,8 +1,10 @@
+'use client';
 
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { AdminService } from '@/lib/admin.service';
 
 
 type User = {
@@ -17,9 +19,9 @@ type Job = {
 };  
 
 type DisputedContract = Contract & {
-  job: Job;
-  client: User;
-  talent: User;
+  project?: Job;
+  client?: User;
+  freelancer?: User;
 };
 
 type Contract = {
@@ -37,12 +39,8 @@ export default function DisputeManagementPage() {
   useEffect(() => {
     async function fetchDisputes() {
       try {
-        const response = await fetch('/api/admin/disputes');
-        if (!response.ok) {
-          throw new Error('Failed to fetch disputes');
-        }
-        const data = await response.json();
-        setDisputes(data);
+        const data = await AdminService.getDisputes();
+        setDisputes(data as DisputedContract[]);
       } catch (err) {
         if (err instanceof Error) {
           setError(err.message);
@@ -78,9 +76,9 @@ export default function DisputeManagementPage() {
           <tbody className="bg-white divide-y divide-gray-200">
             {disputes.map((dispute) => (
               <tr key={dispute.id}>
-                <td className="px-6 py-4 whitespace-nowrap">{dispute.job.title}</td>
-                <td className="px-6 py-4 whitespace-nowrap">{dispute.client.name}</td>
-                <td className="px-6 py-4 whitespace-nowrap">{dispute.talent.name}</td>
+                <td className="px-6 py-4 whitespace-nowrap">{dispute.project?.title ?? 'Untitled'}</td>
+                <td className="px-6 py-4 whitespace-nowrap">{dispute.client?.name ?? 'Unknown'}</td>
+                <td className="px-6 py-4 whitespace-nowrap">{dispute.freelancer?.name ?? 'Unknown'}</td>
                 <td className="px-6 py-4 whitespace-nowrap">{dispute.status}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                   <Link href={`/admin/disputes/${dispute.id}`}>

@@ -1,6 +1,7 @@
 import { Controller, Get, Param } from '@nestjs/common';
 import { ProposalsService } from './proposals.service';
 import { AllowAnonymous } from '@thallesp/nestjs-better-auth';
+import { Bid } from '@prisma/client'; // Import Prisma's generated Bid type
 
 @Controller('proposals')
 export class ProposalsController {
@@ -8,25 +9,25 @@ export class ProposalsController {
 
   @Get()
   @AllowAnonymous()
-  findAll() {
+  async findAll(): Promise<Bid[]> {
     return this.proposalsService.findAll();
   }
 
   @Get(':id')
   @AllowAnonymous()
-  findOne(@Param('id') id: string) {
+  async findOne(@Param('id') id: string): Promise<Bid> {
     return this.proposalsService.findOne(id);
   }
 
-  @Get('/job/:jobId')
+  @Get('/job/:jobId') // Keep the route path as /job/:jobId for external API consistency
   @AllowAnonymous()
-  findByJob(@Param('jobId') jobId: string) {
-    return this.proposalsService.findByJob(jobId);
+  async findByJob(@Param('jobId') jobId: string): Promise<Bid[]> {
+    return this.proposalsService.findByProject(jobId); // Call the renamed service method
   }
 
   @Get('/talent/:talentId')
   @AllowAnonymous()
-  findByTalent(@Param('talentId') talentId: string) {
+  async findByTalent(@Param('talentId') talentId: string): Promise<Bid[]> {
     return this.proposalsService.findByTalent(talentId);
   }
 }

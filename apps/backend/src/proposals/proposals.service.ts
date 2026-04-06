@@ -1,56 +1,28 @@
-import { Injectable } from '@nestjs/common';
-
-export type ProposalStatus = 'pending' | 'accepted' | 'rejected';
-
-export interface Proposal {
-  id: string;
-  jobId: string;
-  talentId: string;
-  coverLetter: string;
-  proposedAmount: number;
-  currency: string;
-  status: ProposalStatus;
-  createdAt: string;
-}
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service';
+import { Bid, BidStatus } from '@prisma/client';
 
 @Injectable()
 export class ProposalsService {
-  private readonly proposals: Proposal[] = [
-    {
-      id: 'proposal_1',
-      jobId: 'job_1',
-      talentId: 'talent_1',
-      coverLetter: 'I have built several SaaS apps with Next.js and NestJS.',
-      proposedAmount: 900,
-      currency: 'USD',
-      status: 'pending',
-      createdAt: new Date().toISOString(),
-    },
-    {
-      id: 'proposal_2',
-      jobId: 'job_1',
-      talentId: 'talent_2',
-      coverLetter: 'I can help refine UX and UI for your marketing site.',
-      proposedAmount: 750,
-      currency: 'USD',
-      status: 'rejected',
-      createdAt: new Date().toISOString(),
-    },
-  ];
+  constructor(private readonly prisma: PrismaService) {}
 
-  findAll() {
-    return this.proposals;
+  async findAll() {
+    return this.prisma.bid.findMany();
   }
 
-  findOne(id: string) {
-    return this.proposals.find((p) => p.id === id) ?? null;
+  async findOne(id: string) {
+    const bid = await this.prisma.bid.findUnique({ where: { id } });
+    if (!bid) {
+      throw new NotFoundException(`Bid with ID ${id} not found`);
+    }
+    return bid;
   }
 
-  findByJob(jobId: string) {
-    return this.proposals.filter((p) => p.jobId === jobId);
+  async findByProject(projectId: string) {
+    return this.prisma.bid.findMany({ where: { projectId } });
   }
 
-  findByTalent(talentId: string) {
-    return this.proposals.filter((p) => p.talentId === talentId);
+  async findByTalent(freelancerId: string) {
+    return this.prisma.bid.findMany({ where: { freelancerId } });
   }
 }

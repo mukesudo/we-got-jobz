@@ -6,14 +6,18 @@ import {
   Body,
   Put,
   Delete,
-  UnauthorizedException,
+  UseGuards,
   Query,
 } from '@nestjs/common';
 import { JobsService } from './jobs.service';
-import { AllowAnonymous, Session } from '@thallesp/nestjs-better-auth';
-import type { UserSession } from '@thallesp/nestjs-better-auth';
+import { AllowAnonymous } from '@thallesp/nestjs-better-auth';
 import { CreateJobDto } from './dto/create-job.dto';
 import { UpdateJobDto } from './dto/update-job.dto';
+import { Roles } from '../common/decorators/roles.decorator';
+import { RolesGuard } from '../auth/roles.guard';
+import { UserRole } from '@we-got-jobz/common'; // Changed import
+import { CurrentUser } from '../common/decorators/current-user.decorator';
+import type { User } from '@prisma/client'; // Changed to import type
 
 @Controller('jobs')
 export class JobsController {
@@ -36,24 +40,27 @@ export class JobsController {
   }
 
   @Post()
-  async create(@Session() session: UserSession, @Body() data: CreateJobDto) {
-    if (!session) throw new UnauthorizedException();
-    return this.jobsService.create(session.user.id, data);
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.CLIENT)
+  create(@CurrentUser() user: User, @Body() data: CreateJobDto) {
+    return this.jobsService.create(user.id, data);
   }
 
   @Put(':id')
-  async update(
-    @Session() session: UserSession,
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.CLIENT)
+  update(
+    @CurrentUser() user: User,
     @Param('id') id: string,
     @Body() data: UpdateJobDto,
   ) {
-    if (!session) throw new UnauthorizedException();
-    return this.jobsService.update(id, session.user.id, data);
+    return this.jobsService.update(id, user.id, data);
   }
 
   @Delete(':id')
-  async remove(@Session() session: UserSession, @Param('id') id: string) {
-    if (!session) throw new UnauthorizedException();
-    return this.jobsService.remove(id, session.user.id);
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.CLIENT)
+  remove(@CurrentUser() user: User, @Param('id') id: string) {
+    return this.jobsService.remove(id, user.id);
   }
 }

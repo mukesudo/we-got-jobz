@@ -41,4 +41,18 @@ export class UsersService {
       },
     });
   }
+
+  async deactivateUser(userId: string) {
+    return this.prisma.user.update({
+      where: { id: userId },
+      data: { isActive: false },
+    });
+  }
+
+  async activateUser(userId: string) {
+    return this.prisma.user.update({
+      where: { id: userId },
+      data: { isActive: true },
+    });
+  }
 }

@@ -1,22 +1,92 @@
 "use client"
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useSession } from "@/lib/auth-client";
+import { JobsService } from "@/lib/jobs.service";
+import { UserRole } from "@/lib";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { Modal, ModalContent, ModalHeader, ModalTitle, ModalDescription, ModalFooter } from "@/components/ui/modal";
 
 export default function CreateJobPage() {
-    const [jobType, setJobType] = useState("full-time");
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+    const [formData, setFormData] = useState({
+        title: "",
+        description: "",
+        budget: "",
+        budgetType: "FIXED",
+        deadline: "",
+        skills: "",
+    });
+    const { data: sessionData, isPending } = useSession();
+    const router = useRouter();
+    const [showLoginModal, setShowLoginModal] = useState(false);
+
+    const status = isPending ? "loading" : (sessionData?.session ? "authenticated" : "unauthenticated");
+    const userRole = (sessionData?.user as any)?.role as UserRole | undefined;
+    const isClient = userRole === UserRole.CLIENT;
     
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    useEffect(() => {
+        if (status === "unauthenticated") {
+            setShowLoginModal(true);
+        }
+    }, [status]);
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        // We'll add form submission logic to the backend later
-        alert("Job submitted! (Placeholder)");
+        if (status !== "authenticated") {
+            setShowLoginModal(true);
+            return;
+        }
+        if (!isClient) {
+            setError("Only clients can post jobs.");
+            return;
+        }
+
+        setIsSubmitting(true);
+        setError(null);
+        try {
+            const skills = formData.skills
+                .split(",")
+                .map((skill) => skill.trim())
+                .filter(Boolean);
+            const payload = {
+                title: formData.title.trim(),
+                description: formData.description.trim(),
+                budget: Number(formData.budget),
+                budgetType: formData.budgetType as "FIXED" | "HOURLY",
+                deadline: formData.deadline ? new Date(formData.deadline).toISOString() : undefined,
+                skills,
+            };
+
+            if (!payload.title || !payload.description || Number.isNaN(payload.budget)) {
+                setError("Please fill out all required fields.");
+                return;
+            }
+
+            const created = await JobsService.create(payload);
+            router.push(`/marketplace/jobs/${created.id}`);
+        } catch (err) {
+            console.error(err);
+            setError("Failed to create job. Please try again.");
+        } finally {
+            setIsSubmitting(false);
+        }
     };
+
+    const handleLoginRedirect = () => {
+        router.push("/auth/login");
+    };
+    
+    if (status === "loading") {
+        return <div>Loading...</div>;
+    }
 
     return (
         <div className="bg-secondary/40 min-h-screen">
@@ -27,80 +97,119 @@ export default function CreateJobPage() {
                         <CardDescription>Fill out the details below to find the perfect candidate for your project.</CardDescription>
                     </CardHeader>
                     <CardContent>
+                        {error && (
+                            <div className="mb-4 rounded-md bg-red-50 px-4 py-3 text-sm text-red-700">
+                                {error}
+                            </div>
+                        )}
+                        {!isClient && status === "authenticated" && (
+                            <div className="mb-4 rounded-md bg-yellow-50 px-4 py-3 text-sm text-yellow-700">
+                                Only clients can post jobs. Update your account role to continue.
+                            </div>
+                        )}
                         <form onSubmit={handleSubmit} className="space-y-6">
-                            <div className="space-y-2">
-                                <Label htmlFor="title">Job Title</Label>
-                                <Input id="title" placeholder="e.g., Senior React Developer" required />
-                            </div>
-
-                            <div className="space-y-2">
-                                <Label htmlFor="category">Category</Label>
-                                <Select>
-                                    <SelectTrigger id="category">
-                                        <SelectValue placeholder="Select a category" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="web-dev">Web Development</SelectItem>
-                                        <SelectItem value="design">Graphic Design</SelectItem>
-                                        <SelectItem value="writing">Writing & Translation</SelectItem>
-                                        <SelectItem value="marketing">Sales & Marketing</SelectItem>
-                                        <SelectItem value="admin">Admin & Customer Support</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </div>
-
-                            <div className="space-y-2">
-                                <Label htmlFor="description">Job Description</Label>
-                                <Textarea id="description" placeholder="Describe the job requirements, responsibilities, and qualifications." rows={8} required />
-                            </div>
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <fieldset disabled={status !== "authenticated" || !isClient || isSubmitting} className="space-y-6">
                                 <div className="space-y-2">
-                                    <Label htmlFor="budget">Budget ($)</Label>
-                                    <Input id="budget" type="number" placeholder="e.g., 5000" required />
+                                    <Label htmlFor="title">Job Title</Label>
+                                    <Input
+                                        id="title"
+                                        placeholder="e.g., Senior React Developer"
+                                        required
+                                        value={formData.title}
+                                        onChange={(e) => setFormData((prev) => ({ ...prev, title: e.target.value }))}
+                                    />
                                 </div>
+
                                 <div className="space-y-2">
-                                    <Label htmlFor="location">Location</Label>
-                                    <Input id="location" placeholder="e.g., Remote, New York" required />
+                                    <Label htmlFor="description">Job Description</Label>
+                                    <Textarea
+                                        id="description"
+                                        placeholder="Describe the job requirements, responsibilities, and qualifications."
+                                        rows={8}
+                                        required
+                                        value={formData.description}
+                                        onChange={(e) => setFormData((prev) => ({ ...prev, description: e.target.value }))}
+                                    />
                                 </div>
-                            </div>
-                            
-                            <div className="space-y-2">
-                                <Label>Job Type</Label>
-                                <RadioGroup
-                                    defaultValue="full-time"
-                                    className="flex items-center gap-4"
-                                    onValueChange={setJobType}
-                                    value={jobType}
-                                >
-                                    <div className="flex items-center space-x-2">
-                                        <RadioGroupItem value="full-time" id="full-time" />
-                                        <Label htmlFor="full-time">Full-time</Label>
-                                    </div>
-                                    <div className="flex items-center space-x-2">
-                                        <RadioGroupItem value="part-time" id="part-time" />
-                                        <Label htmlFor="part-time">Part-time</Label>
-                                    </div>
-                                    <div className="flex items-center space-x-2">
-                                        <RadioGroupItem value="contract" id="contract" />
-                                        <Label htmlFor="contract">Contract</Label>
-                                    </div>
-                                </RadioGroup>
-                            </div>
 
-                            <div className="space-y-2">
-                                <Label htmlFor="skills">Required Skills</Label>
-                                <Input id="skills" placeholder="e.g., React, Node.js, PostgreSQL (comma-separated)" />
-                                <p className="text-xs text-muted-foreground">Separate skills with a comma.</p>
-                            </div>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="space-y-2">
+                                        <Label htmlFor="budget">Budget ($)</Label>
+                                        <Input
+                                            id="budget"
+                                            type="number"
+                                            min="0"
+                                            placeholder="e.g., 5000"
+                                            required
+                                            value={formData.budget}
+                                            onChange={(e) => setFormData((prev) => ({ ...prev, budget: e.target.value }))}
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label htmlFor="deadline">Deadline (optional)</Label>
+                                        <Input
+                                            id="deadline"
+                                            type="date"
+                                            value={formData.deadline}
+                                            onChange={(e) => setFormData((prev) => ({ ...prev, deadline: e.target.value }))}
+                                        />
+                                    </div>
+                                </div>
+                                
+                                <div className="space-y-2">
+                                    <Label>Budget Type</Label>
+                                    <RadioGroup
+                                        defaultValue="FIXED"
+                                        className="flex items-center gap-4"
+                                        onValueChange={(value) => setFormData((prev) => ({ ...prev, budgetType: value }))}
+                                        value={formData.budgetType}
+                                    >
+                                        <div className="flex items-center space-x-2">
+                                            <RadioGroupItem value="FIXED" id="fixed" />
+                                            <Label htmlFor="fixed">Fixed</Label>
+                                        </div>
+                                        <div className="flex items-center space-x-2">
+                                            <RadioGroupItem value="HOURLY" id="hourly" />
+                                            <Label htmlFor="hourly">Hourly</Label>
+                                        </div>
+                                    </RadioGroup>
+                                </div>
 
-                            <div className="flex justify-end pt-4">
-                                <Button type="submit" size="lg">Post Job</Button>
-                            </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="skills">Required Skills</Label>
+                                    <Input
+                                        id="skills"
+                                        placeholder="e.g., React, Node.js, PostgreSQL (comma-separated)"
+                                        value={formData.skills}
+                                        onChange={(e) => setFormData((prev) => ({ ...prev, skills: e.target.value }))}
+                                    />
+                                    <p className="text-xs text-muted-foreground">Separate skills with a comma.</p>
+                                </div>
+
+                                <div className="flex justify-end pt-4">
+                                    <Button type="submit" size="lg" disabled={isSubmitting}>
+                                        {isSubmitting ? "Posting..." : "Post Job"}
+                                    </Button>
+                                </div>
+                            </fieldset>
                         </form>
                     </CardContent>
                 </Card>
             </div>
+            <Modal open={showLoginModal} onOpenChange={setShowLoginModal}>
+                <ModalContent>
+                    <ModalHeader>
+                        <ModalTitle>Authentication Required</ModalTitle>
+                        <ModalDescription>
+                            You must be logged in to post a new job. Please log in to continue.
+                        </ModalDescription>
+                    </ModalHeader>
+                    <ModalFooter>
+                        <Button variant="outline" onClick={() => setShowLoginModal(false)}>Cancel</Button>
+                        <Button onClick={handleLoginRedirect}>Log In</Button>
+                    </ModalFooter>
+                </ModalContent>
+            </Modal>
         </div>
     );
 }

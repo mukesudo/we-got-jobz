@@ -16,6 +16,10 @@ model User {
   image         String?
   role          UserRole  @default(CLIENT)
   isActive      Boolean   @default(true)
+  notificationsEmail    Boolean   @default(true)
+  notificationsMarketing Boolean  @default(false)
+  notificationsJobAlerts Boolean  @default(true)
+  notificationsMessages  Boolean  @default(true)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 

@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { TalentService } from './talent.service';
 import { AllowAnonymous } from '@thallesp/nestjs-better-auth';
 
@@ -8,8 +8,8 @@ export class TalentController {
 
   @Get()
   @AllowAnonymous()
-  findAll() {
-    return this.talentService.findAll();
+  findAll(@Query('skills') skills?: string) {
+    return this.talentService.findAll(skills);
   }
 
   @Get(':id')

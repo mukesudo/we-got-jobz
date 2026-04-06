@@ -2,19 +2,10 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { Job } from '@/lib';
 
 interface JobCardProps {
-  job: {
-    id: string;
-    title: string;
-    description: string;
-    category?: string;
-    budget: number;
-    budgetType: string;
-    skills?: string[];
-    status: string;
-    createdAt: string;
-  };
+  job: Job;
 }
 
 export default function JobCard({ job }: JobCardProps) {
@@ -26,7 +17,7 @@ export default function JobCard({ job }: JobCardProps) {
             {job.title}
           </h3>
         </Link>
-        <p className="text-sm text-gray-500 mt-1">{job.category}</p>
+        <p className="text-sm text-gray-500 mt-1">{job.category?.name}</p>
       </div>
 
       <p className="text-gray-700 text-sm line-clamp-2 mb-4">
@@ -36,8 +27,8 @@ export default function JobCard({ job }: JobCardProps) {
       <div className="mb-4">
         <div className="flex flex-wrap gap-2">
           {job.skills && job.skills.slice(0, 3).map((skill) => (
-            <span key={skill} className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">
-              {skill}
+            <span key={skill.id} className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">
+              {skill.name}
             </span>
           ))}
           {job.skills && job.skills.length > 3 && (

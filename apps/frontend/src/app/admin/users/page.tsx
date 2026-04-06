@@ -5,6 +5,8 @@ import { useState, useEffect } from 'react';
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { AdminService } from '@/lib/admin.service';
+import { UserRole } from "@/lib";
 
 
 interface User {
@@ -14,21 +16,9 @@ interface User {
   role: UserRole;
 }
 
-enum UserRole {
-  ADMIN = 'ADMIN',
-  CLIENT = 'CLIENT',
-  FREELANCER = 'FREELANCER',
-}
-
 export default function UserManagementPage() {
-  const dummyUsers: User[] = [
-    { id: '1', name: 'John Doe', email: 'john.doe@example.com', role: UserRole.FREELANCER },
-    { id: '2', name: 'Jane Smith', email: 'jane.smith@example.com', role: UserRole.CLIENT },
-    { id: '3', name: 'Admin User', email: 'admin.user@example.com', role: UserRole.ADMIN },
-  ];
-
-  const [users, setUsers] = useState<User[]>(dummyUsers);
-  const [loading, setLoading] = useState(false);
+  const [users, setUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [newRole, setNewRole] = useState<UserRole | null>(null);
@@ -36,14 +26,9 @@ export default function UserManagementPage() {
   async function fetchUsers() {
     try {
       setLoading(true);
-      // NOTE: The user will need to configure the correct API host.
-      // The /api prefix is already handled by the auth library proxy.
-      const response = await fetch('/api/admin/users');
-      if (!response.ok) {
-        throw new Error('Failed to fetch users');
-      }
-      const data = await response.json();
-      setUsers(data);
+      setError(null);
+      const data = await AdminService.getUsers();
+      setUsers(data as User[]);
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);
@@ -73,19 +58,8 @@ export default function UserManagementPage() {
     if (!selectedUser || !newRole) return;
 
     try {
-      const response = await fetch(`/api/admin/users/${selectedUser.id}/role`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ role: newRole }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to update user role');
-      }
-
-      await fetchUsers(); // Refresh the user list
+      await AdminService.updateUserRole(selectedUser.id, newRole);
+      await fetchUsers();
       handleCloseModal();
     } catch (err) {
       if (err instanceof Error) {
@@ -115,16 +89,24 @@ export default function UserManagementPage() {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {users.map((user) => (
-              <tr key={user.id}>
-                <td className="px-6 py-4 whitespace-nowrap">{user.name}</td>
-                <td className="px-6 py-4 whitespace-nowrap">{user.email}</td>
-                <td className="px-6 py-4 whitespace-nowrap">{user.role}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                  <Button onClick={() => handleOpenModal(user)}>Change Role</Button>
+            {users.length === 0 ? (
+              <tr>
+                <td colSpan={4} className="px-6 py-6 text-center text-sm text-muted-foreground">
+                  No users found.
                 </td>
               </tr>
-            ))}
+            ) : (
+              users.map((user) => (
+                <tr key={user.id}>
+                  <td className="px-6 py-4 whitespace-nowrap">{user.name}</td>
+                  <td className="px-6 py-4 whitespace-nowrap">{user.email}</td>
+                  <td className="px-6 py-4 whitespace-nowrap">{user.role}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <Button onClick={() => handleOpenModal(user)}>Change Role</Button>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </Card>

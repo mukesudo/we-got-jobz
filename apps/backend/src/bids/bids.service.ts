@@ -38,9 +38,9 @@ export class BidsService {
     if (!project) throw new NotFoundException('Project not found');
 
     const createData = {
-      amount: data.proposedAmount,
-      coverLetter: data.coverLetter,
-      estimatedHours: isNaN(Number(data.proposedTimeline)) ? undefined : Number(data.proposedTimeline),
+      amount: data.amount,
+      coverLetter: data.coverLetter ?? null,
+      estimatedHours: data.estimatedHours ?? null,
       freelancerId,
       projectId,
     } as any;

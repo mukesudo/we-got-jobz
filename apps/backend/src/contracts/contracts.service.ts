@@ -1,46 +1,27 @@
-import { Injectable } from '@nestjs/common';
-
-export type ContractStatus = 'active' | 'completed' | 'canceled';
-
-export interface Contract {
-  id: string;
-  jobId: string;
-  talentId: string;
-  proposalId: string;
-  totalAmount: number;
-  currency: string;
-  status: ContractStatus;
-  createdAt: string;
-}
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class ContractsService {
-  private readonly contracts: Contract[] = [
-    {
-      id: 'contract_1',
-      jobId: 'job_1',
-      talentId: 'talent_1',
-      proposalId: 'proposal_1',
-      totalAmount: 900,
-      currency: 'USD',
-      status: 'active',
-      createdAt: new Date().toISOString(),
-    },
-  ];
+  constructor(private readonly prisma: PrismaService) {}
 
-  findAll() {
-    return this.contracts;
+  async findAll() {
+    return this.prisma.contract.findMany();
   }
 
-  findOne(id: string) {
-    return this.contracts.find((c) => c.id === id) ?? null;
+  async findOne(id: string) {
+    const contract = await this.prisma.contract.findUnique({ where: { id } });
+    if (!contract) {
+      throw new NotFoundException(`Contract with ID ${id} not found`);
+    }
+    return contract;
   }
 
-  findByJob(jobId: string) {
-    return this.contracts.filter((c) => c.jobId === jobId);
+  async findByJob(jobId: string) {
+    return this.prisma.contract.findMany({ where: { projectId: jobId } });
   }
 
-  findByTalent(talentId: string) {
-    return this.contracts.filter((c) => c.talentId === talentId);
+  async findByTalent(freelancerId: string) {
+    return this.prisma.contract.findMany({ where: { freelancerId } });
   }
 }

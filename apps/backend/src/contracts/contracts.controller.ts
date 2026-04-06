@@ -1,6 +1,7 @@
 import { Controller, Get, Param } from '@nestjs/common';
-import { ContractsService, Contract } from './contracts.service';
+import { ContractsService } from './contracts.service';
 import { AllowAnonymous } from '@thallesp/nestjs-better-auth';
+import { Contract, ContractStatus } from '@prisma/client'; // Import Prisma's generated Contract type
 
 @Controller('contracts')
 export class ContractsController {
@@ -8,25 +9,25 @@ export class ContractsController {
 
   @Get()
   @AllowAnonymous()
-  findAll(): Contract[] {
+  async findAll(): Promise<Contract[]> {
     return this.contractsService.findAll();
   }
 
   @Get(':id')
   @AllowAnonymous()
-  findOne(@Param('id') id: string): Contract | null {
+  async findOne(@Param('id') id: string): Promise<Contract> {
     return this.contractsService.findOne(id);
   }
 
   @Get('/job/:jobId')
   @AllowAnonymous()
-  findByJob(@Param('jobId') jobId: string): Contract[] {
+  async findByJob(@Param('jobId') jobId: string): Promise<Contract[]> {
     return this.contractsService.findByJob(jobId);
   }
 
   @Get('/talent/:talentId')
   @AllowAnonymous()
-  findByTalent(@Param('talentId') talentId: string): Contract[] {
+  async findByTalent(@Param('talentId') talentId: string): Promise<Contract[]> {
     return this.contractsService.findByTalent(talentId);
   }
 }

@@ -14,6 +14,7 @@ import { ContractsModule } from './contracts/contracts.module';
 import { BidsModule } from './bids/bids.module';
 import { AdminModule } from './admin/admin.module';
 import { ProfilesModule } from './profiles/profiles.module';
+import { BillingModule } from './billing/billing.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { ProfilesModule } from './profiles/profiles.module';
     BidsModule,
     ProfilesModule,
     AdminModule,
+    BillingModule,
   ],
   controllers: [AppController],
   providers: [

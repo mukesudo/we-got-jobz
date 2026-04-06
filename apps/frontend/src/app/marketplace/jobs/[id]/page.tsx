@@ -1,53 +1,54 @@
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Briefcase, MapPin, DollarSign, Clock, ShieldCheck } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { DollarSign, Clock, ShieldCheck } from "lucide-react";
+import { notFound } from "next/navigation";
+import ProposalForm from "./proposal-form";
 
-// Placeholder data - we will replace this with a real API call later
-const getJobDetails = async (id: string) => {
-  console.log(`Fetching job details for id: ${id}`);
-  return {
-    id: "1",
-    title: "Senior Full-Stack Engineer (React & Node.js)",
-    company: "Innovate Inc.",
-    location: "Remote",
-    type: "Full-time",
-    experience: "Senior",
-    salary: "120,000 - 150,000",
-    description: `
-      <p>Innovate Inc. is at the forefront of digital transformation, and we're looking for a passionate Senior Full-Stack Engineer to join our growing team. You will be responsible for designing, developing, and maintaining our cutting-edge web applications from end to end.</p>
-      <h3 class="font-bold mt-4 mb-2">Responsibilities:</h3>
-      <ul class="list-disc list-inside space-y-2">
-        <li>Develop and maintain scalable web applications using React.js for the frontend and Node.js for the backend.</li>
-        <li>Collaborate with cross-functional teams to define, design, and ship new features.</li>
-        <li>Write clean, maintainable, and efficient code while adhering to best practices.</li>
-        <li>Ensure the performance, quality, and responsiveness of applications.</li>
-        <li>Identify and correct bottlenecks and fix bugs.</li>
-      </ul>
-      <h3 class="font-bold mt-4 mb-2">Qualifications:</h3>
-      <ul class="list-disc list-inside space-y-2">
-        <li>5+ years of professional experience in software development.</li>
-        <li>Strong proficiency in JavaScript, TypeScript, React.js, and Node.js.</li>
-        <li>Experience with RESTful APIs and modern authorization mechanisms, such as JSON Web Token.</li>
-        <li>Familiarity with modern front-end build pipelines and tools like Webpack, Babel, etc.</li>
-        <li>Experience with relational databases (e.g., PostgreSQL) and ORMs (e.g., Prisma).</li>
-      </ul>
-    `,
-    client: {
-      name: "John Doe",
-      paymentVerified: true,
-      rating: 4.9,
-      reviews: 24,
-    }
-  };
+const BACKEND_URL =
+  process.env.NEXT_PUBLIC_API_URL ||
+  process.env.BACKEND_URL ||
+  "http://localhost:3000";
+
+type JobDetails = {
+  id: string;
+  title: string;
+  description: string;
+  budget: number;
+  budgetType: "FIXED" | "HOURLY";
+  deadline?: string | null;
+  createdAt: string;
+  skills?: { id: string; name: string }[];
+  bids?: { id: string; amount: number }[];
+  client?: {
+    id: string;
+    name?: string | null;
+    clientProfile?: {
+      company?: string | null;
+      location?: string | null;
+    } | null;
+  } | null;
 };
 
+const getJobDetails = async (id: string): Promise<JobDetails | null> => {
+  const response = await fetch(`${BACKEND_URL}/jobs/${id}`, {
+    cache: "no-store",
+  });
+  if (!response.ok) return null;
+  return response.json();
+};
 
 export default async function JobDetailsPage({ params }: { params: { id: string } }) {
   const job = await getJobDetails(params.id);
 
   if (!job) {
-    return <div>Job not found</div>;
+    notFound();
   }
+
+  const budgetDisplay = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    maximumFractionDigits: 0,
+  }).format(job.budget);
 
   return (
     <div className="bg-secondary/40">
@@ -56,24 +57,27 @@ export default async function JobDetailsPage({ params }: { params: { id: string 
         <div className="bg-background rounded-lg shadow-sm p-6 mb-8">
             <h1 className="text-3xl md:text-4xl font-bold mb-2">{job.title}</h1>
             <div className="flex items-center text-muted-foreground mb-4">
-              <span className="font-semibold text-lg">{job.company}</span>
+              <span className="font-semibold text-lg">
+                {job.client?.clientProfile?.company || job.client?.name || "Client"}
+              </span>
             </div>
             <div className="flex flex-wrap gap-4 text-muted-foreground">
                 <div className="flex items-center gap-2">
-                    <MapPin className="h-5 w-5" />
-                    <span>{job.location}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                    <Briefcase className="h-5 w-5" />
-                    <span>{job.type}</span>
-                </div>
-                <div className="flex items-center gap-2">
                     <DollarSign className="h-5 w-5" />
-                    <span>{job.salary}</span>
+                    <span>
+                      {budgetDisplay}
+                      {job.budgetType === "HOURLY" ? " / hr" : ""}
+                    </span>
                 </div>
                  <div className="flex items-center gap-2">
                     <Clock className="h-5 w-5" />
-                    <span>{job.experience} Level</span>
+                    <span>
+                      {job.deadline ? `Deadline: ${new Date(job.deadline).toLocaleDateString()}` : "No deadline"}
+                    </span>
+                </div>
+                <div className="flex items-center gap-2">
+                    <ShieldCheck className="h-5 w-5" />
+                    <span>{job.bids?.length ?? 0} proposals</span>
                 </div>
             </div>
         </div>
@@ -83,10 +87,18 @@ export default async function JobDetailsPage({ params }: { params: { id: string 
           <div className="md:col-span-2">
             <Card>
               <CardContent className="pt-6">
-                <div
-                  className="prose dark:prose-invert max-w-none"
-                  dangerouslySetInnerHTML={{ __html: job.description }}
-                />
+                <div className="prose dark:prose-invert max-w-none whitespace-pre-wrap">
+                  {job.description}
+                </div>
+                {job.skills && job.skills.length > 0 && (
+                  <div className="mt-6 flex flex-wrap gap-2">
+                    {job.skills.map((skill) => (
+                      <Badge key={skill.id} variant="secondary">
+                        {skill.name}
+                      </Badge>
+                    ))}
+                  </div>
+                )}
               </CardContent>
             </Card>
           </div>
@@ -94,21 +106,20 @@ export default async function JobDetailsPage({ params }: { params: { id: string 
           {/* Sidebar */}
           <div>
             <div className="space-y-6">
-               <Button size="lg" className="w-full text-lg">
-                Submit a Proposal
-              </Button>
+              <ProposalForm jobId={job.id} />
               <Card>
                 <CardHeader>
                   <CardTitle>About the Client</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                     <p className="font-semibold text-lg">{job.client.name}</p>
-                     <div className="flex items-center gap-2 text-muted-foreground">
-                        <ShieldCheck className={`h-5 w-5 ${job.client.paymentVerified ? 'text-green-500' : 'text-gray-400'}`} />
-                        <span>{job.client.paymentVerified ? 'Payment method verified' : 'Payment method not verified'}</span>
-                    </div>
-                     <p>{job.client.rating} stars from {job.client.reviews} reviews</p>
+                     <p className="font-semibold text-lg">{job.client?.name || "Client"}</p>
+                     {job.client?.clientProfile?.location && (
+                      <p className="text-sm text-muted-foreground">{job.client.clientProfile.location}</p>
+                     )}
+                     {job.client?.clientProfile?.company && (
+                      <p className="text-sm text-muted-foreground">{job.client.clientProfile.company}</p>
+                     )}
                   </div>
                 </CardContent>
               </Card>

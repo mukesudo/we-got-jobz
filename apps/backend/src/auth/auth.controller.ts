@@ -8,13 +8,18 @@ import {
 import type { UserSession } from '@thallesp/nestjs-better-auth';
 import { auth } from './config';
 
-@Controller('user')
+@Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService<typeof auth>) {}
 
   @Get('me')
   getProfile(@Session() session: UserSession) {
     return { user: session.user };
+  }
+
+  @Get('session')
+  getSession(@Session() session: UserSession) {
+    return session;
   }
 
   @Get('public')

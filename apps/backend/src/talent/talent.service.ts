@@ -1,35 +1,55 @@
 import { Injectable } from '@nestjs/common';
-
+import { PrismaService } from '../prisma/prisma.service';
+import { UserRole } from '@prisma/client';
 @Injectable()
 export class TalentService {
-  private readonly talent = [
-    {
-      id: 'talent_1',
-      name: 'Abebe K.',
-      title: 'Full-stack engineer',
-      location: 'Addis Ababa, Ethiopia',
-      hourlyRate: 35,
-      currency: 'USD',
-      skills: ['Next.js', 'NestJS', 'Prisma', 'PostgreSQL'],
-      bio: 'Full-stack engineer focused on TypeScript and modern web stacks.',
-    },
-    {
-      id: 'talent_2',
-      name: 'Sara M.',
-      title: 'Product designer',
-      location: 'Remote',
-      hourlyRate: 40,
-      currency: 'USD',
-      skills: ['Figma', 'Design systems', 'UX research'],
-      bio: 'Product designer helping SaaS teams ship clear, usable interfaces.',
-    },
-  ];
+  constructor(private readonly prisma: PrismaService) {}
 
-  findAll() {
-    return this.talent;
+  async findAll(skills?: string) {
+    const where: any = {
+      role: UserRole.FREELANCER,
+      freelancerProfile: {
+        isNot: null,
+      },
+    };
+
+    if (skills) {
+      const skillsArray = skills.split(',').map(skill => skill.trim());
+      where.freelancerProfile.skills = {
+        some: {
+          name: {
+            in: skillsArray,
+            mode: 'insensitive',
+          },
+        },
+      };
+    }
+
+    return this.prisma.user.findMany({
+      where,
+      include: {
+        freelancerProfile: {
+          include: {
+            skills: true,
+          },
+        },
+      },
+    });
   }
 
-  findOne(id: string) {
-    return this.talent.find((t) => t.id === id) ?? null;
+  async findOne(id: string) {
+    return this.prisma.user.findUnique({
+      where: {
+        id,
+        role: UserRole.FREELANCER,
+      },
+      include: {
+        freelancerProfile: {
+          include: {
+            skills: true,
+          },
+        },
+      },
+    });
   }
 }

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Handle -->
+  <path d="M176 128V80a48 48 0 0 1 48-48h64a48 48 0 0 1 48 48v48" fill="none" stroke="#2563eb" stroke-width="48" stroke-linecap="round"/>
+  <!-- Body -->
+  <rect x="48" y="128" width="416" height="336" rx="64" fill="#2563eb"/>
+  <!-- Checkmark -->
+  <path d="M160 296l64 64 128-128" fill="none" stroke="white" stroke-width="48" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

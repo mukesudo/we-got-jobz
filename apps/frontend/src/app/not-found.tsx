@@ -1,19 +1,19 @@
 'use client';
 
-import React from 'react';
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
-export default function GlobalError(props: {
-  error: Error & { digest?: string };
-  reset: () => void;
-}) {
-  return (
-    <html>
-      <body>
-        <div>
-          <h2>Oops! Page not found - 404</h2>
-          <button onClick={props.reset}>Try again</button>
+export default function NotFound() {
+    return (
+        <div className="flex flex-col items-center justify-center min-h-screen text-center">
+            <h1 className="text-6xl font-bold text-primary">404</h1>
+            <h2 className="text-3xl font-semibold mt-4 mb-2">Page Not Found</h2>
+            <p className="text-lg text-muted-foreground mb-8">
+                The page you are looking for does not exist or has been moved.
+            </p>
+            <Button asChild>
+                <Link href="/">Go to Homepage</Link>
+            </Button>
         </div>
-      </body>
-    </html>
-  );
+    );
 }

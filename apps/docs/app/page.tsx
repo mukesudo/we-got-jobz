@@ -12,8 +12,8 @@ const ThemeImage = (props: Props) => {
 
   return (
     <>
-      <Image {...rest} src={srcLight} className="imgLight" />
-      <Image {...rest} src={srcDark} className="imgDark" />
+      <Image {...rest} src={srcLight} className={`${rest.className ?? ''} imgLight dark:hidden`} />
+      <Image {...rest} src={srcDark} className={`${rest.className ?? ''} imgDark hidden dark:block`} />
     </>
   );
 };
@@ -63,6 +63,7 @@ export default function Home() {
             Read our docs
           </a>
         </div>
+        <ThemeToggle />
         <Button appName="docs" className={styles.secondary}>
           Open alert
         </Button>

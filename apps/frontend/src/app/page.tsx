@@ -1,8 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Briefcase, DollarSign, Search, ShieldCheck } from "lucide-react";
 import Link from "next/link";
+import { getSession } from "@/lib/get-session";
+import { UserRole } from "@/lib";
 
-export default function LandingPage() {
+export default async function LandingPage() {
+  const session = await getSession();
+  const userRole = session?.user?.role;
+
   return (
     <div className="flex flex-col min-h-screen">
       <main className="flex-grow">
@@ -12,7 +17,7 @@ export default function LandingPage() {
             <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-4">
               &quot;Find Your Next Great Hire, or Your Next Great Gig&quot;
             </h1>
-            <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
+            <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto mb-8 ">
               We connect top-tier freelance talent with innovative companies. Whether you&apos;re looking to hire experts or find your next project, your search ends here.
             </p>
             <div className="flex justify-center gap-4">
@@ -21,15 +26,23 @@ export default function LandingPage() {
                   Find a Job <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
-              <Button asChild size="lg" variant="secondary">
-                <Link href="/jobs/create">
-                  Post a Job
-                </Link>
-              </Button>
+              {userRole === UserRole.CLIENT && (
+                <Button asChild size="lg" variant="secondary">
+                  <Link href="/jobs/create">
+                    Post a Job
+                  </Link>
+                </Button>
+              )}
+               {userRole === UserRole.CLIENT && (
+                <Button asChild size="lg" variant="secondary">
+                  <Link href="/marketplace/talent">
+                    Browse Talent
+                  </Link>
+                </Button>
+              )}
             </div>
           </div>
         </section>
-
         {/* How It Works Section */}
         <section className="py-16 md:py-24 bg-secondary">
           <div className="container mx-auto px-4">

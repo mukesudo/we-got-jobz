@@ -1,13 +1,15 @@
 
-import { Controller, Get, Post, Body, Param, Put, UseGuards } from '@nestjs/common';
+import { Controller, Get, Body, Param, Put, UseGuards } from '@nestjs/common';
 import { AdminService } from './admin.service';
-import { Roles } from '@thallesp/nestjs-better-auth';
-import { UserRole, ContractStatus } from '@prisma/client';
+import { UserRole } from '@prisma/client';
 import { UpdateUserRoleDto } from './dto/update-user-role.dto';
 import { UpdateContractStatusDto } from './dto/update-contract-status.dto';
+import { Roles } from '../common/decorators/roles.decorator';
+import { RolesGuard } from '../auth/roles.guard';
 
 @Controller('admin')
-@Roles([UserRole.ADMIN])
+@UseGuards(RolesGuard)
+@Roles(UserRole.ADMIN)
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
 

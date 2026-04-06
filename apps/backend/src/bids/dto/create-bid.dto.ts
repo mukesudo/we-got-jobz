@@ -1,12 +1,14 @@
-import { IsString, IsNumber } from 'class-validator';
+import { IsString, IsNumber, IsOptional } from 'class-validator';
 
 export class CreateBidDto {
   @IsNumber()
-  proposedAmount: number;
+  amount: number;
 
-  @IsString()
-  proposedTimeline: string;
+  @IsOptional()
+  @IsNumber()
+  estimatedHours?: number;
 
+  @IsOptional()
   @IsString()
-  coverLetter: string;
+  coverLetter?: string;
 }
