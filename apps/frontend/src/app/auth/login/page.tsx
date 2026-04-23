@@ -9,10 +9,47 @@ import { signIn } from '@/lib/auth-client';
 import { Button } from '@/components/ui/button';
 import { Github } from 'lucide-react';
 
+const DEFAULT_RETURN_PATH = '/marketplace/jobs';
+
+function safeDecode(value: string): string {
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return value;
+  }
+}
+
+function normalizeReturnPath(rawValue: string | null): string {
+  if (!rawValue) return DEFAULT_RETURN_PATH;
+
+  const candidate = safeDecode(rawValue).trim();
+  if (!candidate) return DEFAULT_RETURN_PATH;
+
+  if (candidate.startsWith('/') && !candidate.startsWith('//')) {
+    return candidate;
+  }
+
+  if (typeof window !== 'undefined') {
+    try {
+      const parsed = new URL(candidate, window.location.origin);
+      if (parsed.origin === window.location.origin) {
+        return `${parsed.pathname}${parsed.search}${parsed.hash}`;
+      }
+    } catch {
+      return DEFAULT_RETURN_PATH;
+    }
+  }
+
+  return DEFAULT_RETURN_PATH;
+}
+
 function LoginPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const returnPath = searchParams.get('callbackURL') || '/marketplace/jobs';
+  const returnPath = React.useMemo(
+    () => normalizeReturnPath(searchParams.get('callbackURL')),
+    [searchParams],
+  );
   const oauthError = searchParams.get('error');
   const oauthErrorDescription = searchParams.get('error_description');
   const [email, setEmail] = React.useState('');
@@ -46,8 +83,8 @@ function LoginPageContent() {
   React.useEffect(() => {
     if (oauthError) {
       const message = oauthErrorDescription
-        ? decodeURIComponent(oauthErrorDescription)
-        : decodeURIComponent(oauthError);
+        ? safeDecode(oauthErrorDescription)
+        : safeDecode(oauthError);
       setError(message);
     }
   }, [oauthError, oauthErrorDescription]);

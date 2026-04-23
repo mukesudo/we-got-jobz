@@ -10,10 +10,47 @@ import { Github } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 
+const DEFAULT_RETURN_PATH = "/auth/select-role";
+
+function safeDecode(value: string): string {
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return value;
+  }
+}
+
+function normalizeReturnPath(rawValue: string | null): string {
+  if (!rawValue) return DEFAULT_RETURN_PATH;
+
+  const candidate = safeDecode(rawValue).trim();
+  if (!candidate) return DEFAULT_RETURN_PATH;
+
+  if (candidate.startsWith("/") && !candidate.startsWith("//")) {
+    return candidate;
+  }
+
+  if (typeof window !== "undefined") {
+    try {
+      const parsed = new URL(candidate, window.location.origin);
+      if (parsed.origin === window.location.origin) {
+        return `${parsed.pathname}${parsed.search}${parsed.hash}`;
+      }
+    } catch {
+      return DEFAULT_RETURN_PATH;
+    }
+  }
+
+  return DEFAULT_RETURN_PATH;
+}
+
 function SignupPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const returnPath = searchParams.get("callbackURL") || "/marketplace/jobs";
+  const returnPath = React.useMemo(
+    () => normalizeReturnPath(searchParams.get("callbackURL")),
+    [searchParams]
+  );
   const oauthError = searchParams.get("error");
   const oauthErrorDescription = searchParams.get("error_description");
   const [formData, setFormData] = React.useState({
@@ -52,8 +89,8 @@ function SignupPageContent() {
   React.useEffect(() => {
     if (oauthError) {
       const message = oauthErrorDescription
-        ? decodeURIComponent(oauthErrorDescription)
-        : decodeURIComponent(oauthError);
+        ? safeDecode(oauthErrorDescription)
+        : safeDecode(oauthError);
       setError(message);
     }
   }, [oauthError, oauthErrorDescription]);
