@@ -1,7 +1,22 @@
 import { api } from '@/lib/api';
 import { User, Contract } from '@/lib';
 
+export interface AdminStats {
+  totalUsers: number;
+  totalJobs: number;
+  openJobs: number;
+  inProgressJobs: number;
+  completedJobs: number;
+  activeContracts: number;
+  disputedContracts: number;
+  platformRevenue: number;
+}
+
 export const AdminService = {
+  async getStats() {
+    const { data } = await api.get<AdminStats>('/admin/stats');
+    return data;
+  },
   async getUsers() {
     const { data } = await api.get<User[]>('/admin/users');
     return data;

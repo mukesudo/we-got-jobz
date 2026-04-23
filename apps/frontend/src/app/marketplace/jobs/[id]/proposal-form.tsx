@@ -27,7 +27,8 @@ export default function ProposalForm({ jobId }: ProposalFormProps) {
   }
 
   const isAuthenticated = !!sessionData?.session;
-  const userRole = sessionData?.user?.role as UserRole | undefined;
+  const currentUser = sessionData?.user as { role?: UserRole } | undefined;
+  const userRole = currentUser?.role;
 
   if (!isAuthenticated) {
     return (

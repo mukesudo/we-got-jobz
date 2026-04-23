@@ -30,7 +30,11 @@ export class JobsController {
     @Query('take') take?: string,
     @Query('search') search?: string,
   ) {
-    return this.jobsService.findAll(Number(skip) || 0, Number(take) || 10, search);
+    return this.jobsService.findAll(
+      Number(skip) || 0,
+      Number(take) || 10,
+      search,
+    );
   }
 
   @Get(':id')

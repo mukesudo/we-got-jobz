@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { DollarSign, Clock, ShieldCheck } from "lucide-react";
 import { notFound } from "next/navigation";
 import ProposalForm from "./proposal-form";
+import BidManagement from "./bid-management";
 
 const BACKEND_URL =
   process.env.NEXT_PUBLIC_API_URL ||
@@ -18,7 +19,20 @@ type JobDetails = {
   deadline?: string | null;
   createdAt: string;
   skills?: { id: string; name: string }[];
-  bids?: { id: string; amount: number }[];
+  bids?: {
+    id: string;
+    amount: number;
+    status: "PENDING" | "ACCEPTED" | "REJECTED";
+    coverLetter?: string | null;
+    estimatedHours?: number | null;
+    freelancer?: {
+      id: string;
+      name?: string | null;
+      freelancerProfile?: {
+        title?: string | null;
+      } | null;
+    } | null;
+  }[];
   client?: {
     id: string;
     name?: string | null;
@@ -107,6 +121,7 @@ export default async function JobDetailsPage({ params }: { params: { id: string 
           <div>
             <div className="space-y-6">
               <ProposalForm jobId={job.id} />
+              <BidManagement jobClientId={job.client?.id} bids={job.bids || []} />
               <Card>
                 <CardHeader>
                   <CardTitle>About the Client</CardTitle>

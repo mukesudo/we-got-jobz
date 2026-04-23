@@ -35,4 +35,16 @@ export class BidsController {
     if (!session) throw new UnauthorizedException();
     return this.bidsService.create(session.user.id, payload.projectId, payload);
   }
+
+  @Post(':id/accept')
+  async accept(@Session() session: UserSession, @Param('id') id: string) {
+    if (!session) throw new UnauthorizedException();
+    return this.bidsService.accept(id, session.user.id);
+  }
+
+  @Post(':id/reject')
+  async reject(@Session() session: UserSession, @Param('id') id: string) {
+    if (!session) throw new UnauthorizedException();
+    return this.bidsService.reject(id, session.user.id);
+  }
 }

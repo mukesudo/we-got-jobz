@@ -1,11 +1,51 @@
-import { toNextJsHandler } from 'better-auth/next-js';
-// TODO: This was importing from '@lib/auth' which does not exist.
-// It has been changed to import from the common package.
-// Also, the baseURL in the auth config (packages/common/src/auth.config.ts)
-// seems to be misconfigured. It should point to the backend URL (e.g., http://localhost:3001)
-// not the frontend URL (http://localhost:3000).
-import { auth } from '@we-got-jobz/common/src/auth.config';
+import { NextRequest, NextResponse } from "next/server";
 
-const handler = toNextJsHandler(auth);
+const BACKEND_URL =
+  process.env.NEXT_PUBLIC_API_URL ||
+  process.env.BACKEND_URL ||
+  "http://localhost:3000";
 
-export const { GET, POST, PUT, DELETE } = handler;
+type RouteContext = {
+  params: Promise<{ all?: string[] }>;
+};
+
+async function proxyAuth(request: NextRequest, context: RouteContext) {
+  const params = await context.params;
+  const path = params.all?.join("/") ?? "";
+  const targetUrl = new URL(`${BACKEND_URL}/api/auth/${path}`);
+  targetUrl.search = new URL(request.url).search;
+
+  const init: RequestInit = {
+    method: request.method,
+    headers: request.headers,
+    body:
+      request.method === "GET" || request.method === "HEAD"
+        ? undefined
+        : await request.text(),
+    redirect: "manual",
+  };
+
+  const response = await fetch(targetUrl.toString(), init);
+
+  return new NextResponse(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers: response.headers,
+  });
+}
+
+export async function GET(request: NextRequest, context: RouteContext) {
+  return proxyAuth(request, context);
+}
+
+export async function POST(request: NextRequest, context: RouteContext) {
+  return proxyAuth(request, context);
+}
+
+export async function PUT(request: NextRequest, context: RouteContext) {
+  return proxyAuth(request, context);
+}
+
+export async function DELETE(request: NextRequest, context: RouteContext) {
+  return proxyAuth(request, context);
+}

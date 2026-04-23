@@ -37,4 +37,43 @@ export class AdminService {
   async updateContractStatus(id: string, status: ContractStatus) {
     return this.prisma.contract.update({ where: { id }, data: { status } });
   }
+
+  async getDashboardStats() {
+    const [
+      totalUsers,
+      totalJobs,
+      openJobs,
+      inProgressJobs,
+      completedJobs,
+      activeContracts,
+      disputedContracts,
+      totalCompletedPayments,
+    ] = await Promise.all([
+      this.prisma.user.count(),
+      this.prisma.project.count(),
+      this.prisma.project.count({ where: { status: 'OPEN' } }),
+      this.prisma.project.count({ where: { status: 'IN_PROGRESS' } }),
+      this.prisma.project.count({ where: { status: 'COMPLETED' } }),
+      this.prisma.contract.count({ where: { status: 'ACTIVE' } }),
+      this.prisma.contract.count({ where: { status: 'DISPUTED' } }),
+      this.prisma.transaction.aggregate({
+        where: {
+          status: 'COMPLETED',
+          type: { in: ['PAYMENT', 'FEE'] },
+        },
+        _sum: { amount: true },
+      }),
+    ]);
+
+    return {
+      totalUsers,
+      totalJobs,
+      openJobs,
+      inProgressJobs,
+      completedJobs,
+      activeContracts,
+      disputedContracts,
+      platformRevenue: totalCompletedPayments._sum.amount ?? 0,
+    };
+  }
 }

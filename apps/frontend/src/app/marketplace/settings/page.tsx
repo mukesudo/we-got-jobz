@@ -20,6 +20,16 @@ const defaultNotifications = {
 
 export default function SettingsPage() {
   const { data: sessionData, isPending } = useSession();
+  const currentUser = sessionData?.user as
+    | {
+        name?: string | null;
+        email?: string | null;
+        notificationsEmail?: boolean;
+        notificationsMarketing?: boolean;
+        notificationsJobAlerts?: boolean;
+        notificationsMessages?: boolean;
+      }
+    | undefined;
   const status = isPending
     ? "loading"
     : sessionData?.session
@@ -54,23 +64,23 @@ export default function SettingsPage() {
   const [billingActionLoading, setBillingActionLoading] = useState(false);
 
   useEffect(() => {
-    if (status !== "authenticated" || !sessionData?.user) return;
+    if (status !== "authenticated" || !currentUser) return;
     setAccountForm({
-      name: sessionData.user.name || "",
-      email: sessionData.user.email || "",
+      name: currentUser.name || "",
+      email: currentUser.email || "",
     });
 
     setNotifications({
       notificationsEmail:
-        sessionData.user.notificationsEmail ?? defaultNotifications.notificationsEmail,
+        currentUser.notificationsEmail ?? defaultNotifications.notificationsEmail,
       notificationsMarketing:
-        sessionData.user.notificationsMarketing ?? defaultNotifications.notificationsMarketing,
+        currentUser.notificationsMarketing ?? defaultNotifications.notificationsMarketing,
       notificationsJobAlerts:
-        sessionData.user.notificationsJobAlerts ?? defaultNotifications.notificationsJobAlerts,
+        currentUser.notificationsJobAlerts ?? defaultNotifications.notificationsJobAlerts,
       notificationsMessages:
-        sessionData.user.notificationsMessages ?? defaultNotifications.notificationsMessages,
+        currentUser.notificationsMessages ?? defaultNotifications.notificationsMessages,
     });
-  }, [status, sessionData]);
+  }, [currentUser, status]);
 
   const refreshBilling = async () => {
     setBillingLoading(true);

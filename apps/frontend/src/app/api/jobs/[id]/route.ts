@@ -1,16 +1,22 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
 const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:3000';
 
-export async function GET(_: Request, { params }: { params: { id: string } }) {
-  const res = await fetch(`${BACKEND_URL}/jobs/${params.id}`);
+type RouteContext = {
+  params: Promise<{ id: string }>;
+};
+
+export async function GET(_: NextRequest, { params }: RouteContext) {
+  const { id } = await params;
+  const res = await fetch(`${BACKEND_URL}/jobs/${id}`);
   const data = await res.json();
   return NextResponse.json(data, { status: res.status });
 }
 
-export async function PUT(request: Request, { params }: { params: { id: string } }) {
+export async function PUT(request: NextRequest, { params }: RouteContext) {
+  const { id } = await params;
   const body = await request.json();
-  const res = await fetch(`${BACKEND_URL}/jobs/${params.id}`, {
+  const res = await fetch(`${BACKEND_URL}/jobs/${id}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -22,8 +28,9 @@ export async function PUT(request: Request, { params }: { params: { id: string }
   return NextResponse.json(data, { status: res.status });
 }
 
-export async function DELETE(_: Request, { params }: { params: { id: string } }) {
-  const res = await fetch(`${BACKEND_URL}/jobs/${params.id}`, {
+export async function DELETE(_: NextRequest, { params }: RouteContext) {
+  const { id } = await params;
+  const res = await fetch(`${BACKEND_URL}/jobs/${id}`, {
     method: 'DELETE',
   });
   const data = await res.json();

@@ -108,7 +108,10 @@ export class JobsService {
   }
 
   async update(id: string, userId: string, data: UpdateJobDto) {
-    const existing = await this.prisma.project.findUnique({ where: { id }, include: { skills: true } });
+    const existing = await this.prisma.project.findUnique({
+      where: { id },
+      include: { skills: true },
+    });
     if (!existing) throw new NotFoundException('Job not found');
     if (existing.clientId !== userId) throw new ForbiddenException();
 
@@ -129,18 +132,27 @@ export class JobsService {
 
     if (skills) {
       await this.prisma.$transaction([
-        this.prisma.project.update({ where: { id }, data: { skills: { set: [] } } }),
+        this.prisma.project.update({
+          where: { id },
+          data: { skills: { set: [] } },
+        }),
         this.prisma.project.update({
           where: { id },
           data: {
             skills: {
-              connectOrCreate: skills.map((name) => ({ where: { name }, create: { name } })),
+              connectOrCreate: skills.map((name) => ({
+                where: { name },
+                create: { name },
+              })),
             },
           },
         }),
       ]);
 
-      const found = await this.prisma.project.findUnique({ where: { id }, include: { bids: true, skills: true } });
+      const found = await this.prisma.project.findUnique({
+        where: { id },
+        include: { bids: true, skills: true },
+      });
       if (!found) throw new NotFoundException('Job not found');
       updated = found;
     }

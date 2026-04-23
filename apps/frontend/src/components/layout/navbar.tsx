@@ -52,6 +52,18 @@ export default function Navbar() {
                   Dashboard
                 </Link>
                 <Link
+                  href="/marketplace/contracts"
+                  className="text-gray-700 hover:text-gray-900"
+                >
+                  Contracts
+                </Link>
+                <Link
+                  href="/marketplace/messages"
+                  className="text-gray-700 hover:text-gray-900"
+                >
+                  Messages
+                </Link>
+                <Link
                   href={`/marketplace/profile/${session.user.id}`}
                   className="text-gray-700 hover:text-gray-900"
                 >
@@ -151,6 +163,18 @@ export default function Navbar() {
                   className="block px-3 py-2 text-gray-700 hover:bg-gray-100"
                 >
                   Dashboard
+                </Link>
+                <Link
+                  href="/marketplace/contracts"
+                  className="block px-3 py-2 text-gray-700 hover:bg-gray-100"
+                >
+                  Contracts
+                </Link>
+                <Link
+                  href="/marketplace/messages"
+                  className="block px-3 py-2 text-gray-700 hover:bg-gray-100"
+                >
+                  Messages
                 </Link>
                 <Link
                   href={`/marketplace/profile/${session.user.id}`}

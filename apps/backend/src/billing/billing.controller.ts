@@ -1,4 +1,10 @@
-import { Body, Controller, Get, Post, UnauthorizedException } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { BillingService } from './billing.service';
 import { Session } from '@thallesp/nestjs-better-auth';
 import type { UserSession } from '@thallesp/nestjs-better-auth';

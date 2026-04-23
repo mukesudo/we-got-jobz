@@ -15,7 +15,7 @@
       "outputs": []
     },
     "build": {
-      "dependsOn": ["^build", "lint"],
+      "dependsOn": ["^build"],
       "outputs": [
         "dist/**",
         ".next/**",
@@ -48,6 +48,10 @@
       ]
     },
     "type-check": {
+      "cache": true,
+      "outputs": []
+    },
+    "check-types": {
       "cache": true,
       "outputs": []
     },

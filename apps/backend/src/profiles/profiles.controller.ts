@@ -1,4 +1,13 @@
-import { Controller, Get, Param, Post, Put, Body, UseGuards, UnauthorizedException } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  Post,
+  Put,
+  Body,
+  UseGuards,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { ProfilesService } from './profiles.service';
 import { AllowAnonymous, Session } from '@thallesp/nestjs-better-auth'; // Keep Session for consistency
 import { CurrentUser } from '../common/decorators/current-user.decorator';
@@ -23,12 +32,20 @@ export class ProfilesController {
     @Body() createFreelancerProfileDto: CreateFreelancerProfileDto,
   ) {
     // Check if freelancer profile already exists
-    const existingProfile = await this.profilesService.getFreelancerProfile(user.id);
+    const existingProfile = await this.profilesService.getFreelancerProfile(
+      user.id,
+    );
     if (existingProfile) {
       // If profile exists, update it instead of creating a new one
-      return this.profilesService.updateFreelancerProfile(user.id, createFreelancerProfileDto);
+      return this.profilesService.updateFreelancerProfile(
+        user.id,
+        createFreelancerProfileDto,
+      );
     }
-    return this.profilesService.createFreelancerProfile(user.id, createFreelancerProfileDto);
+    return this.profilesService.createFreelancerProfile(
+      user.id,
+      createFreelancerProfileDto,
+    );
   }
 
   @Put('freelancer')
@@ -38,7 +55,10 @@ export class ProfilesController {
     @CurrentUser() user: User,
     @Body() updateFreelancerProfileDto: UpdateFreelancerProfileDto,
   ) {
-    return this.profilesService.updateFreelancerProfile(user.id, updateFreelancerProfileDto);
+    return this.profilesService.updateFreelancerProfile(
+      user.id,
+      updateFreelancerProfileDto,
+    );
   }
 
   @Post('client')
@@ -49,12 +69,20 @@ export class ProfilesController {
     @Body() createClientProfileDto: CreateClientProfileDto,
   ) {
     // Check if client profile already exists
-    const existingProfile = await this.profilesService.getClientProfile(user.id);
+    const existingProfile = await this.profilesService.getClientProfile(
+      user.id,
+    );
     if (existingProfile) {
       // If profile exists, update it instead of creating a new one
-      return this.profilesService.updateClientProfile(user.id, createClientProfileDto);
+      return this.profilesService.updateClientProfile(
+        user.id,
+        createClientProfileDto,
+      );
     }
-    return this.profilesService.createClientProfile(user.id, createClientProfileDto);
+    return this.profilesService.createClientProfile(
+      user.id,
+      createClientProfileDto,
+    );
   }
 
   @Put('client')
@@ -64,7 +92,10 @@ export class ProfilesController {
     @CurrentUser() user: User,
     @Body() updateClientProfileDto: UpdateClientProfileDto,
   ) {
-    return this.profilesService.updateClientProfile(user.id, updateClientProfileDto);
+    return this.profilesService.updateClientProfile(
+      user.id,
+      updateClientProfileDto,
+    );
   }
 
   @Get(':userId')

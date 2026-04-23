@@ -63,7 +63,6 @@ export default function Home() {
             Read our docs
           </a>
         </div>
-        <ThemeToggle />
         <Button appName="docs" className={styles.secondary}>
           Open alert
         </Button>

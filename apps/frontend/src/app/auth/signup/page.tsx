@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signUp, signIn } from "@/lib/auth-client";
@@ -9,7 +10,7 @@ import { Github } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 
-export default function SignupPage() {
+function SignupPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const returnPath = searchParams.get("callbackURL") || "/marketplace/jobs";
@@ -74,7 +75,7 @@ export default function SignupPage() {
     setIsLoading(true);
 
     try {
-      const result = await signUp.email({
+      const result = await (signUp.email as unknown as (payload: Record<string, unknown>) => Promise<any>)({
         email: formData.email,
         password: formData.password,
         name: formData.name,
@@ -265,5 +266,13 @@ export default function SignupPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function SignupPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen p-8 text-center">Loading signup...</div>}>
+      <SignupPageContent />
+    </Suspense>
   );
 }

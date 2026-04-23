@@ -10,47 +10,60 @@ import { UserRole } from '@prisma/client';
 export class ProfilesService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async createFreelancerProfile(userId: string, data: CreateFreelancerProfileDto) {
+  async createFreelancerProfile(
+    userId: string,
+    data: CreateFreelancerProfileDto,
+  ) {
     const user = await this.prisma.user.findUnique({ where: { id: userId } });
     if (!user) throw new NotFoundException('User not found');
     if (user.role !== UserRole.FREELANCER) {
       // Optionally update user role here if this is the intended flow
-      await this.prisma.user.update({ where: { id: userId }, data: { role: UserRole.FREELANCER } });
+      await this.prisma.user.update({
+        where: { id: userId },
+        data: { role: UserRole.FREELANCER },
+      });
     }
 
-    const skillsToConnect = data.skills?.map(name => ({ name }));
+    const skillsToConnect = data.skills?.map((name) => ({ name }));
     delete data.skills; // Remove skills from data as it's handled separately
 
     return this.prisma.freelancerProfile.create({
       data: {
         userId,
         ...data,
-        skills: skillsToConnect ? {
-          connectOrCreate: skillsToConnect.map(skill => ({
-            where: { name: skill.name },
-            create: { name: skill.name }
-          }))
-        } : undefined,
+        skills: skillsToConnect
+          ? {
+              connectOrCreate: skillsToConnect.map((skill) => ({
+                where: { name: skill.name },
+                create: { name: skill.name },
+              })),
+            }
+          : undefined,
       },
       include: { skills: true },
     });
   }
 
-  async updateFreelancerProfile(userId: string, data: UpdateFreelancerProfileDto) {
-    const skillsToConnect = data.skills?.map(name => ({ name }));
+  async updateFreelancerProfile(
+    userId: string,
+    data: UpdateFreelancerProfileDto,
+  ) {
+    const skillsToConnect = data.skills?.map((name) => ({ name }));
     delete data.skills;
 
     return this.prisma.freelancerProfile.update({
       where: { userId },
       data: {
         ...data,
-        skills: skillsToConnect ? {
-          set: [], // Clear existing skills
-          connectOrCreate: skillsToConnect.map(skill => ({
-            where: { name: skill.name },
-            create: { name: skill.name }
-          }))
-        } : undefined,
+        skills: skillsToConnect
+          ? {
+              set: [], // Clear existing skills
+              connectOrCreate: skillsToConnect.map((skill) => ({
+                where: { name: skill.name },
+                create: { name: skill.name },
+              })),
+            }
+          : undefined,
       },
       include: { skills: true },
     });
@@ -61,7 +74,10 @@ export class ProfilesService {
     if (!user) throw new NotFoundException('User not found');
     if (user.role !== UserRole.CLIENT) {
       // Optionally update user role here if this is the intended flow
-      await this.prisma.user.update({ where: { id: userId }, data: { role: UserRole.CLIENT } });
+      await this.prisma.user.update({
+        where: { id: userId },
+        data: { role: UserRole.CLIENT },
+      });
     }
     return this.prisma.clientProfile.create({
       data: {

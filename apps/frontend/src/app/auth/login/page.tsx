@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { Suspense } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -8,7 +9,7 @@ import { signIn } from '@/lib/auth-client';
 import { Button } from '@/components/ui/button';
 import { Github } from 'lucide-react';
 
-export default function LoginPage() {
+function LoginPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const returnPath = searchParams.get('callbackURL') || '/marketplace/jobs';
@@ -185,5 +186,13 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen p-8 text-center">Loading login...</div>}>
+      <LoginPageContent />
+    </Suspense>
   );
 }

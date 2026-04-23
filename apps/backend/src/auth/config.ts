@@ -56,9 +56,10 @@ export const auth = betterAuth({
     }
 
     if (role === UserRole.FREELANCER) {
-      const existingFreelancerProfile = await prisma.freelancerProfile.findUnique({
-        where: { userId: user.id },
-      });
+      const existingFreelancerProfile =
+        await prisma.freelancerProfile.findUnique({
+          where: { userId: user.id },
+        });
       if (!existingFreelancerProfile) {
         await prisma.freelancerProfile.create({ data: { userId: user.id } });
       }

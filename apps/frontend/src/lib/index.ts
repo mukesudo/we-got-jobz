@@ -94,3 +94,16 @@ export interface Transaction {
   createdAt: string;
   contract?: Contract;
 }
+
+export interface Message {
+  id: string;
+  content: string;
+  senderId: string;
+  receiverId: string;
+  projectId?: string;
+  contractId?: string;
+  isRead: boolean;
+  createdAt: string;
+  sender?: User;
+  receiver?: User;
+}

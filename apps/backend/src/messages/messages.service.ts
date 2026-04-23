@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
@@ -68,7 +68,17 @@ export class MessagesService {
     });
   }
 
-  async markAsRead(messageId: string) {
+  async markAsRead(messageId: string, userId: string) {
+    const message = await this.prisma.message.findUnique({ where: { id: messageId } });
+
+    if (!message) {
+      throw new NotFoundException('Message not found');
+    }
+
+    if (message.receiverId !== userId) {
+      throw new ForbiddenException('You can only update your own messages');
+    }
+
     return this.prisma.message.update({
       where: { id: messageId },
       data: { isRead: true },

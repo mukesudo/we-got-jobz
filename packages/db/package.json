@@ -2,8 +2,8 @@
   "name": "@we-got-jobz/db",
   "version": "0.0.0",
   "description": "Shared Prisma schema and generated client",
-  "main": "./index.js",
-  "types": "./index.d.ts",
+  "main": "./index.ts",
+  "types": "./index.ts",
   "scripts": {
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
@@ -13,8 +13,8 @@
   },
   "exports": {
     ".": {
-      "types": "./index.d.ts",
-      "default": "./index.js"
+      "types": "./index.ts",
+      "default": "./index.ts"
     }
   },
   "keywords": [],

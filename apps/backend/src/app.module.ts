@@ -15,6 +15,8 @@ import { BidsModule } from './bids/bids.module';
 import { AdminModule } from './admin/admin.module';
 import { ProfilesModule } from './profiles/profiles.module';
 import { BillingModule } from './billing/billing.module';
+import { UsersModule } from './users/users.module';
+import { MessagesModule } from './messages/messages.module';
 
 @Module({
   imports: [
@@ -33,6 +35,8 @@ import { BillingModule } from './billing/billing.module';
     ProfilesModule,
     AdminModule,
     BillingModule,
+    UsersModule,
+    MessagesModule,
   ],
   controllers: [AppController],
   providers: [

@@ -1,4 +1,3 @@
-
 import { Controller, Get, Body, Param, Put, UseGuards } from '@nestjs/common';
 import { AdminService } from './admin.service';
 import { UserRole } from '@prisma/client';
@@ -13,6 +12,11 @@ import { RolesGuard } from '../auth/roles.guard';
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
 
+  @Get('stats')
+  getStats() {
+    return this.adminService.getDashboardStats();
+  }
+
   @Get('users')
   getUsers() {
     return this.adminService.getUsers();
@@ -24,7 +28,10 @@ export class AdminController {
   }
 
   @Put('users/:id/role')
-  updateUserRole(@Param('id') id: string, @Body() updateUserRoleDto: UpdateUserRoleDto) {
+  updateUserRole(
+    @Param('id') id: string,
+    @Body() updateUserRoleDto: UpdateUserRoleDto,
+  ) {
     return this.adminService.updateUserRole(id, updateUserRoleDto.role);
   }
 
@@ -39,7 +46,13 @@ export class AdminController {
   }
 
   @Put('disputes/:id/status')
-  updateContractStatus(@Param('id') id: string, @Body() updateContractStatusDto: UpdateContractStatusDto) {
-    return this.adminService.updateContractStatus(id, updateContractStatusDto.status);
+  updateContractStatus(
+    @Param('id') id: string,
+    @Body() updateContractStatusDto: UpdateContractStatusDto,
+  ) {
+    return this.adminService.updateContractStatus(
+      id,
+      updateContractStatusDto.status,
+    );
   }
 }

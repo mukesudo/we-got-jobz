@@ -34,6 +34,10 @@ export class PrismaService implements OnModuleInit, OnModuleDestroy {
     return this.prisma.transaction;
   }
 
+  get wallet() {
+    return this.prisma.wallet;
+  }
+
   get contract() {
     return this.prisma.contract;
   }
@@ -51,6 +55,6 @@ export class PrismaService implements OnModuleInit, OnModuleDestroy {
   }
 
   get $transaction() {
-    return this.prisma.$transaction;
+    return this.prisma.$transaction.bind(this.prisma);
   }
 }

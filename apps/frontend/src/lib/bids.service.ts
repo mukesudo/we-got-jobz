@@ -20,10 +20,12 @@ export const BidsService = {
   },
 
   async accept(id: string) {
-    return api.post<Bid>(`/bids/${id}/accept`);
+    const { data } = await api.post<{ bid: Bid; contract: unknown }>(`/bids/${id}/accept`);
+    return data;
   },
 
   async reject(id: string) {
-    return api.post<Bid>(`/bids/${id}/reject`);
+    const { data } = await api.post<Bid>(`/bids/${id}/reject`);
+    return data;
   },
 };
