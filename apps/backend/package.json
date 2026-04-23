@@ -33,14 +33,17 @@
     "@thallesp/nestjs-better-auth": "^2.2.0",
     "@we-got-jobz/common": "workspace:^",
     "@we-got-jobz/db": "workspace:^",
+    "amqplib": "^1.0.3",
     "bcrypt": "^6.0.0",
     "better-auth": "^1.4.5",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.3",
     "dotenv": "^16.4.5",
     "pg": "^8.16.3",
+    "prom-client": "^15.1.3",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
+    "stripe": "^22.0.2",
     "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
@@ -67,7 +70,8 @@
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.7.3",
-    "typescript-eslint": "^8.20.0"
+    "typescript-eslint": "^8.20.0",
+    "webpack-node-externals": "^3.0.0"
   },
   "jest": {
     "preset": "ts-jest/presets/default-esm",

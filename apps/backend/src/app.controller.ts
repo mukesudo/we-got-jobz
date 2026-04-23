@@ -9,4 +9,10 @@ export class AppController {
   health() {
     return { status: 'ok' };
   }
+
+  @AllowAnonymous()
+  @Get('ready')
+  ready() {
+    return { status: 'ready' };
+  }
 }

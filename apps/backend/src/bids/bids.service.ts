@@ -7,10 +7,16 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateBidDto } from './dto/create-bid.dto';
+import { RabbitMqService } from '../integrations/rabbitmq.service';
+import { MetricsService } from '../metrics/metrics.service';
 
 @Injectable()
 export class BidsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly rabbitMqService: RabbitMqService,
+    private readonly metricsService: MetricsService,
+  ) {}
 
   findByProject(projectId: string) {
     return this.prisma.bid.findMany({
@@ -154,6 +160,15 @@ export class BidsService {
         where: { id: bid.projectId },
         data: { status: 'IN_PROGRESS' },
       });
+
+      await this.rabbitMqService.publish('bid.accepted', {
+        bidId: acceptedBid.id,
+        projectId: acceptedBid.projectId,
+        freelancerId: acceptedBid.freelancerId,
+        clientId,
+        contractId: contract.id,
+      });
+      this.metricsService.bidAcceptedCounter.inc();
 
       return {
         bid: acceptedBid,

@@ -1,9 +1,15 @@
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { RabbitMqService } from '../integrations/rabbitmq.service';
+import { MetricsService } from '../metrics/metrics.service';
 
 @Injectable()
 export class MessagesService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly rabbitMqService: RabbitMqService,
+    private readonly metricsService: MetricsService,
+  ) {}
 
   async create(
     senderId: string,
@@ -11,7 +17,7 @@ export class MessagesService {
     content: string,
     projectId?: string,
   ) {
-    return this.prisma.message.create({
+    const message = await this.prisma.message.create({
       data: {
         senderId,
         receiverId,
@@ -28,6 +34,16 @@ export class MessagesService {
         },
       },
     });
+
+    await this.rabbitMqService.publish('message.sent', {
+      messageId: message.id,
+      senderId,
+      receiverId,
+      projectId: projectId || null,
+    });
+    this.metricsService.messageSentCounter.inc();
+
+    return message;
   }
 
   async findByProject(projectId: string, skip: number = 0, take: number = 50) {

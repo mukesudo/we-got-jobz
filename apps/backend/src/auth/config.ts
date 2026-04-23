@@ -4,8 +4,57 @@ import { prismaAdapter } from 'better-auth/adapters/prisma';
 import { prisma } from '@we-got-jobz/db'; // Import from our shared client
 import { UserRole } from '@prisma/client';
 
+const DEFAULT_BACKEND_URL = 'http://localhost:3000';
+const DEFAULT_FRONTEND_URL = 'http://localhost:3001';
+
+function trimTrailingSlash(value: string): string {
+  return value.replace(/\/+$/, '');
+}
+
+function getNormalizedUrl(value: string | undefined): string | null {
+  if (!value) return null;
+
+  try {
+    const url = new URL(value);
+    return trimTrailingSlash(url.toString());
+  } catch {
+    return null;
+  }
+}
+
+function getNormalizedOrigin(value: string | undefined): string | null {
+  if (!value) return null;
+
+  try {
+    return new URL(value).origin;
+  } catch {
+    return null;
+  }
+}
+
+const backendBaseURL =
+  getNormalizedUrl(process.env.BACKEND_URL) ||
+  getNormalizedUrl(process.env.BETTER_AUTH_URL) ||
+  DEFAULT_BACKEND_URL;
+
+const frontendBaseURL =
+  getNormalizedUrl(process.env.FRONTEND_URL) ||
+  getNormalizedUrl(process.env.NEXT_PUBLIC_APP_URL) ||
+  DEFAULT_FRONTEND_URL;
+
+const trustedOrigins = Array.from(
+  new Set(
+    [
+      getNormalizedOrigin(frontendBaseURL),
+      getNormalizedOrigin(process.env.FRONTEND_URL),
+      getNormalizedOrigin(process.env.NEXT_PUBLIC_APP_URL),
+      getNormalizedOrigin(DEFAULT_FRONTEND_URL),
+    ].filter((origin): origin is string => Boolean(origin)),
+  ),
+);
+
 export const auth = betterAuth({
-  baseURL: process.env.BACKEND_URL || `http://localhost:3000`,
+  baseURL: backendBaseURL,
   database: prismaAdapter(prisma, { provider: 'postgresql' }),
   emailAndPassword: {
     enabled: true,
@@ -33,9 +82,9 @@ export const auth = betterAuth({
       clientSecret: process.env.GITHUB_CLIENT_SECRET || '',
     },
   },
-  trustedOrigins: [process.env.FRONTEND_URL || 'http://localhost:3001'],
+  trustedOrigins,
   sessionExpiresIn: 60 * 60 * 24 * 7,
-  callbackURL: `${process.env.FRONTEND_URL}/auth/callback`,
+  callbackURL: `${frontendBaseURL}/auth/select-role`,
   inject: process.env.DATABASE_URL,
   userCreated: async (user: { id: string; role?: UserRole | null }) => {
     const role = user.role ?? UserRole.CLIENT;

@@ -17,6 +17,8 @@ import { ProfilesModule } from './profiles/profiles.module';
 import { BillingModule } from './billing/billing.module';
 import { UsersModule } from './users/users.module';
 import { MessagesModule } from './messages/messages.module';
+import { IntegrationsModule } from './integrations/integrations.module';
+import { MetricsModule } from './metrics/metrics.module';
 
 @Module({
   imports: [
@@ -37,6 +39,8 @@ import { MessagesModule } from './messages/messages.module';
     BillingModule,
     UsersModule,
     MessagesModule,
+    IntegrationsModule,
+    MetricsModule,
   ],
   controllers: [AppController],
   providers: [
