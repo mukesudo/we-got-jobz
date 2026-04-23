@@ -63,6 +63,35 @@ docker-compose logs -f
 docker-compose down
 ```
 
+### Dev Wiring (Stripe + RabbitMQ + Monitoring)
+
+```bash
+# 1) Prepare local env
+cp .env.example .env
+
+# 2) Start core infra + app services
+docker-compose up -d postgres redis rabbitmq backend frontend prometheus grafana
+
+# 3) Follow app logs while developing
+docker-compose logs -f backend frontend
+```
+
+Key endpoints:
+- Frontend: http://localhost:3001
+- Backend API: http://localhost:3000
+- RabbitMQ AMQP: `localhost:5672`
+- RabbitMQ Management UI: http://localhost:15672
+- RabbitMQ metrics: http://localhost:15692/metrics
+- Prometheus: http://localhost:9090
+- Grafana: http://localhost:3002
+
+Optional Stripe webhook forwarding during local development:
+
+```bash
+# Requires Stripe CLI installed and authenticated
+stripe listen --forward-to ${STRIPE_WEBHOOK_FORWARD_TO}
+```
+
 ### Production Stack
 
 ```bash
