@@ -43,6 +43,12 @@ export class JobsController {
     return this.jobsService.findOne(id);
   }
 
+  @Get('client/:clientId')
+  @AllowAnonymous()
+  findByClient(@Param('clientId') clientId: string) {
+    return this.jobsService.findByClient(clientId);
+  }
+
   @Post()
   @UseGuards(RolesGuard)
   @Roles(UserRole.CLIENT)

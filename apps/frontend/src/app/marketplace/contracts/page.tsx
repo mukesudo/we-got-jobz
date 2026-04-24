@@ -5,6 +5,7 @@ import { ContractsService } from '@/lib/contracts.service';
 import type { Contract } from '@/lib';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 
 export default function ContractsPage() {
   const [contracts, setContracts] = useState<Contract[]>([]);
@@ -76,8 +77,10 @@ export default function ContractsPage() {
                 className="flex flex-col gap-3 rounded-md border p-4 md:flex-row md:items-center md:justify-between"
               >
                 <div>
-                  <p className="font-semibold">{contract.project?.title || 'Untitled project'}</p>
-                  <p className="text-sm text-muted-foreground">
+                  <Link href={`/marketplace/jobs/${contract.projectId}`} className="font-semibold text-primary hover:underline">
+                    {contract.project?.title || 'Untitled project'}
+                  </Link>
+                  <p className="text-sm text-muted-foreground mt-1">
                     Status: {contract.status} | Amount: ${contract.amount}
                   </p>
                 </div>

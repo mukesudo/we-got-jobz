@@ -46,7 +46,7 @@ export class BidsService {
   async create(freelancerId: string, projectId: string, data: CreateBidDto) {
     const project = await this.prisma.project.findUnique({
       where: { id: projectId },
-      select: { id: true, clientId: true, status: true },
+      select: { id: true, clientId: true, status: true, title: true },
     });
     if (!project) throw new NotFoundException('Project not found');
     if (project.status !== 'OPEN') {
@@ -78,13 +78,25 @@ export class BidsService {
       projectId,
     } as any;
 
-    return this.prisma.bid.create({
+    const newBid = await this.prisma.bid.create({
       data: createData,
       include: {
         freelancer: true,
         project: true,
       },
     });
+
+    // Notify client via message
+    await this.prisma.message.create({
+      data: {
+        content: `New proposal received for your job: ${project.title}. Bid amount: $${data.amount}.`,
+        senderId: freelancerId,
+        receiverId: project.clientId,
+        projectId: projectId,
+      }
+    });
+
+    return newBid;
   }
 
   async accept(bidId: string, clientId: string) {
@@ -168,6 +180,18 @@ export class BidsService {
         clientId,
         contractId: contract.id,
       });
+
+      // Notify freelancer via message
+      await tx.message.create({
+        data: {
+          content: `Congratulations! Your proposal for ${acceptedBid.project.title} was accepted. A contract has been created. Let's discuss!`,
+          senderId: clientId,
+          receiverId: acceptedBid.freelancerId,
+          projectId: acceptedBid.projectId,
+          contractId: contract.id,
+        }
+      });
+
       this.metricsService.bidAcceptedCounter.inc();
 
       return {

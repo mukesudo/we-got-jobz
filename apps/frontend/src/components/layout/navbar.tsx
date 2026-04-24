@@ -109,12 +109,21 @@ export default function Navbar() {
           <div className="hidden md:flex md:items-center md:space-x-1">
             {session?.user ? (
               <>
-                <Link
-                  href="/marketplace/jobs"
-                  className="px-3 py-2 text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
-                >
-                  Jobs
-                </Link>
+                {session.user.role === 'CLIENT' ? (
+                  <Link
+                    href="/marketplace/jobs/my-jobs"
+                    className="px-3 py-2 text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
+                  >
+                    My Jobs
+                  </Link>
+                ) : (
+                  <Link
+                    href="/marketplace/jobs"
+                    className="px-3 py-2 text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
+                  >
+                    Jobs
+                  </Link>
+                )}
                 <Link
                   href="/marketplace/dashboard"
                   className="px-3 py-2 text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
@@ -221,9 +230,17 @@ export default function Navbar() {
                     }}
                     className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
                   >
-                    <div className="w-7 h-7 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-xs font-bold">
-                      {(session.user.name || session.user.email || "U").charAt(0).toUpperCase()}
-                    </div>
+                    {session.user.image ? (
+                      <img 
+                        src={session.user.image} 
+                        alt="Profile" 
+                        className="w-7 h-7 rounded-full object-cover border border-slate-200" 
+                      />
+                    ) : (
+                      <div className="w-7 h-7 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-xs font-bold">
+                        {(session.user.name || session.user.email || "U").charAt(0).toUpperCase()}
+                      </div>
+                    )}
                     <span className="hidden lg:inline max-w-[120px] truncate">
                       {session.user.name || session.user.email}
                     </span>
@@ -301,22 +318,40 @@ export default function Navbar() {
             {session?.user ? (
               <>
                 <div className="flex items-center gap-3 px-3 py-3 mb-2">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold">
-                    {(session.user.name || session.user.email || "U").charAt(0).toUpperCase()}
-                  </div>
+                  {session.user.image ? (
+                    <img 
+                      src={session.user.image} 
+                      alt="Profile" 
+                      className="w-10 h-10 rounded-full object-cover border border-slate-200" 
+                    />
+                  ) : (
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold">
+                      {(session.user.name || session.user.email || "U").charAt(0).toUpperCase()}
+                    </div>
+                  )}
                   <div>
                     <p className="text-sm font-semibold text-slate-900">{session.user.name || "User"}</p>
                     <p className="text-xs text-slate-400">{session.user.email}</p>
                   </div>
                 </div>
 
-                <Link
-                  href="/marketplace/jobs"
-                  onClick={() => setIsOpen(false)}
-                  className="block px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-100 rounded-lg"
-                >
-                  Jobs
-                </Link>
+                {session.user.role === 'CLIENT' ? (
+                  <Link
+                    href="/marketplace/jobs/my-jobs"
+                    onClick={() => setIsOpen(false)}
+                    className="block px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-100 rounded-lg"
+                  >
+                    My Jobs
+                  </Link>
+                ) : (
+                  <Link
+                    href="/marketplace/jobs"
+                    onClick={() => setIsOpen(false)}
+                    className="block px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-100 rounded-lg"
+                  >
+                    Jobs
+                  </Link>
+                )}
                 <Link
                   href="/marketplace/dashboard"
                   onClick={() => setIsOpen(false)}

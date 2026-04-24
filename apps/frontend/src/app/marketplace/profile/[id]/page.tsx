@@ -56,8 +56,8 @@ async function fetchProfile(id: string): Promise<UserProfile | null> {
   return safeJson<UserProfile>(response);
 }
 
-export default async function ProfilePage({ params }: { params: any }) {
-  const { id } = params;
+export default async function ProfilePage({ params }: { params: Promise<{ id: string }> | { id: string } }) {
+  const { id } = await params;
 
   const [user, session] = await Promise.all([
     fetchProfile(id),
@@ -91,7 +91,7 @@ export default async function ProfilePage({ params }: { params: any }) {
           </div>
           {isSelf && (
             <Link
-              href="/marketplace/profile"
+              href="/marketplace/profile/edit"
               className="mt-4 md:mt-0 inline-flex items-center rounded-md border px-4 py-2 text-sm font-medium hover:bg-muted"
             >
               <Edit className="mr-2 h-4 w-4" /> Edit Profile

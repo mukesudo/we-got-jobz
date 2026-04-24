@@ -69,8 +69,14 @@ export default async function LandingPage() {
                 <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-500 text-white h-14 px-8 text-base font-semibold rounded-xl border border-blue-500/30 transition-all hover:scale-[1.02]">
                   <Link href="/jobs/create">Post a Job</Link>
                 </Button>
+              ) : userRole === UserRole.FREELANCER ? (
+                <Button asChild size="lg" className="bg-transparent border border-white/20 text-white hover:bg-white/10 hover:text-white h-14 px-8 text-base font-semibold rounded-xl transition-all hover:scale-[1.02]">
+                  <Link href="/marketplace/profile">
+                    My Profile
+                  </Link>
+                </Button>
               ) : (
-                <Button asChild size="lg" variant="outline" className="border-white/20 text-white hover:bg-white/10 h-14 px-8 text-base font-semibold rounded-xl transition-all hover:scale-[1.02]">
+                <Button asChild size="lg" className="bg-transparent border border-white/20 text-white hover:bg-white/10 hover:text-white h-14 px-8 text-base font-semibold rounded-xl transition-all hover:scale-[1.02]">
                   <Link href="/auth/signup">
                     Join as a Client
                   </Link>
@@ -290,16 +296,26 @@ export default async function LandingPage() {
             <p className="text-lg text-blue-100 max-w-xl mx-auto mb-10">
               Join thousands of freelancers and clients who are already building the future of work together.
             </p>
-            <div className="flex flex-col sm:flex-row justify-center gap-4">
-              <Button asChild size="lg" className="bg-white text-blue-700 hover:bg-slate-100 h-14 px-8 text-base font-semibold rounded-xl shadow-lg transition-all hover:scale-[1.02]">
-                <Link href="/auth/signup">
-                  Create Free Account <ArrowRight className="ml-2 h-5 w-5" />
-                </Link>
-              </Button>
-              <Button asChild size="lg" variant="outline" className="border-white/30 text-white hover:bg-white/10 h-14 px-8 text-base font-semibold rounded-xl transition-all hover:scale-[1.02]">
-                <Link href="/marketplace/jobs">Browse Jobs</Link>
-              </Button>
-            </div>
+            {session?.user ? (
+              <div className="flex flex-col sm:flex-row justify-center gap-4">
+                <Button asChild size="lg" className="bg-white text-blue-700 hover:bg-slate-100 h-14 px-8 text-base font-semibold rounded-xl shadow-lg transition-all hover:scale-[1.02]">
+                  <Link href="/marketplace/dashboard">
+                    Go to Dashboard <ArrowRight className="ml-2 h-5 w-5" />
+                  </Link>
+                </Button>
+              </div>
+            ) : (
+              <div className="flex flex-col sm:flex-row justify-center gap-4">
+                <Button asChild size="lg" className="bg-white text-blue-700 hover:bg-slate-100 h-14 px-8 text-base font-semibold rounded-xl shadow-lg transition-all hover:scale-[1.02]">
+                  <Link href="/auth/signup">
+                    Create Free Account <ArrowRight className="ml-2 h-5 w-5" />
+                  </Link>
+                </Button>
+                <Button asChild size="lg" className="bg-transparent border border-white/30 text-white hover:bg-white/10 hover:text-white h-14 px-8 text-base font-semibold rounded-xl transition-all hover:scale-[1.02]">
+                  <Link href="/marketplace/jobs">Browse Jobs</Link>
+                </Button>
+              </div>
+            )}
             <div className="flex items-center justify-center gap-6 mt-10 text-sm text-blue-200">
               <span className="flex items-center gap-1.5"><CheckCircle className="h-4 w-4" /> Free to join</span>
               <span className="flex items-center gap-1.5"><CheckCircle className="h-4 w-4" /> No credit card required</span>

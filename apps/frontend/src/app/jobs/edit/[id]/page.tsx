@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { useSession } from "@/lib/auth-client";
 import { JobsService } from "@/lib/jobs.service";
 import { UserRole } from "@/lib";
@@ -15,7 +15,7 @@ import { X } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { Modal, ModalContent, ModalHeader, ModalTitle, ModalDescription, ModalFooter } from "@/components/ui/modal";
 
-export default function CreateJobPage() {
+export default function EditJobPage() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [formData, setFormData] = useState({
@@ -29,7 +29,35 @@ export default function CreateJobPage() {
     const [skillInput, setSkillInput] = useState("");
     const { data: sessionData, isPending } = useSession();
     const router = useRouter();
+    const params = useParams();
     const [showLoginModal, setShowLoginModal] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchJob = async () => {
+            if (!params?.id) return;
+            try {
+                const job = await JobsService.getOne(params.id as string);
+                setFormData({
+                    title: job.title,
+                    description: job.description,
+                    budget: job.budget.toString(),
+                    budgetType: job.budgetType,
+                    deadline: job.deadline ? new Date(job.deadline).toISOString().split('T')[0] : "",
+                    skills: job.skills?.map((s: any) => s.name) || [],
+                });
+            } catch (err) {
+                console.error("Failed to fetch job", err);
+                setError("Failed to load job data.");
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        if (status === "authenticated") {
+            fetchJob();
+        }
+    }, [params?.id, status]);
 
     const status = isPending ? "loading" : (sessionData?.session ? "authenticated" : "unauthenticated");
     const userRole = (sessionData?.user as any)?.role as UserRole | undefined;
@@ -88,8 +116,17 @@ export default function CreateJobPage() {
                 return;
             }
 
-            const created = await JobsService.create(payload);
-            router.push(`/marketplace/jobs/${created.id}`);
+            const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+            const response = await fetch(`${BACKEND_URL}/jobs/${params.id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
+                credentials: 'include'
+            });
+
+            if (!response.ok) throw new Error("Failed to update job");
+
+            router.push(`/marketplace/jobs/${params.id}`);
         } catch (err) {
             console.error(err);
             setError("Failed to create job. Please try again.");
@@ -102,8 +139,8 @@ export default function CreateJobPage() {
         router.push("/auth/login");
     };
     
-    if (status === "loading") {
-        return <div>Loading...</div>;
+    if (status === "loading" || isLoading) {
+        return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
     }
 
     return (
@@ -111,8 +148,8 @@ export default function CreateJobPage() {
             <div className="container mx-auto py-12 px-4">
                 <Card className="max-w-3xl mx-auto">
                     <CardHeader>
-                        <CardTitle className="text-2xl">Create a New Job Posting</CardTitle>
-                        <CardDescription>Fill out the details below to find the perfect candidate for your project.</CardDescription>
+                        <CardTitle className="text-2xl">Edit Job Posting</CardTitle>
+                        <CardDescription>Update the details of your job posting.</CardDescription>
                     </CardHeader>
                     <CardContent>
                         {error && (
@@ -218,7 +255,7 @@ export default function CreateJobPage() {
 
                                 <div className="flex justify-end pt-4">
                                     <Button type="submit" size="lg" disabled={isSubmitting}>
-                                        {isSubmitting ? "Posting..." : "Post Job"}
+                                        {isSubmitting ? "Updating..." : "Update Job"}
                                     </Button>
                                 </div>
                             </fieldset>
