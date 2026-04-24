@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { useSession } from "@/lib/auth-client";
 import { JobsService } from "@/lib/jobs.service";
-import { UserRole } from "@/lib";
+import { UserRole, BudgetType } from "@/lib";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -22,8 +22,8 @@ export default function EditJobPage() {
         title: "",
         description: "",
         budget: "",
-        budgetType: "FIXED",
-        deadline: "",
+        budgetType: "FIXED" as "FIXED" | "HOURLY",
+        deadline: "" as string | undefined,
         skills: [] as string[],
     });
     const [skillInput, setSkillInput] = useState("");
@@ -32,6 +32,10 @@ export default function EditJobPage() {
     const params = useParams();
     const [showLoginModal, setShowLoginModal] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
+
+    const status = isPending ? "loading" : (sessionData?.session ? "authenticated" : "unauthenticated");
+    const userRole = (sessionData?.user as any)?.role as UserRole | undefined;
+    const isClient = userRole === UserRole.CLIENT;
 
     useEffect(() => {
         const fetchJob = async () => {
@@ -42,8 +46,8 @@ export default function EditJobPage() {
                     title: job.title,
                     description: job.description,
                     budget: job.budget.toString(),
-                    budgetType: job.budgetType,
-                    deadline: job.deadline ? new Date(job.deadline).toISOString().split('T')[0] : "",
+                    budgetType: job.budgetType === BudgetType.FIXED ? "FIXED" : "HOURLY",
+                    deadline: job.deadline ? new Date(job.deadline).toISOString().split('T')[0] ?? "" : "",
                     skills: job.skills?.map((s: any) => s.name) || [],
                 });
             } catch (err) {
@@ -58,10 +62,6 @@ export default function EditJobPage() {
             fetchJob();
         }
     }, [params?.id, status]);
-
-    const status = isPending ? "loading" : (sessionData?.session ? "authenticated" : "unauthenticated");
-    const userRole = (sessionData?.user as any)?.role as UserRole | undefined;
-    const isClient = userRole === UserRole.CLIENT;
     
     useEffect(() => {
         if (status === "unauthenticated") {
@@ -216,7 +216,7 @@ export default function EditJobPage() {
                                     <RadioGroup
                                         defaultValue="FIXED"
                                         className="flex items-center gap-4"
-                                        onValueChange={(value) => setFormData((prev) => ({ ...prev, budgetType: value }))}
+                                        onValueChange={(value) => setFormData((prev) => ({ ...prev, budgetType: value as "FIXED" | "HOURLY" }))}
                                         value={formData.budgetType}
                                     >
                                         <div className="flex items-center space-x-2">

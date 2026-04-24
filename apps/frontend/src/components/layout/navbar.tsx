@@ -109,7 +109,7 @@ export default function Navbar() {
           <div className="hidden md:flex md:items-center md:space-x-1">
             {session?.user ? (
               <>
-                {session.user.role === 'CLIENT' ? (
+                {(session.user as any).role === 'CLIENT' ? (
                   <Link
                     href="/marketplace/jobs/my-jobs"
                     className="px-3 py-2 text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
@@ -335,7 +335,7 @@ export default function Navbar() {
                   </div>
                 </div>
 
-                {session.user.role === 'CLIENT' ? (
+                {(session.user as any).role === 'CLIENT' ? (
                   <Link
                     href="/marketplace/jobs/my-jobs"
                     onClick={() => setIsOpen(false)}
