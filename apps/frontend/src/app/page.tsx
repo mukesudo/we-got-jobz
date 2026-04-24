@@ -15,6 +15,45 @@ import {
 import Link from "next/link";
 import { getSession } from "@/lib/get-session";
 import { UserRole } from "@/lib";
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Home',
+  description: 'We Got Jobz - Where talent meets opportunity. Connect with top-rated freelancers and visionary companies. Secure escrow payments, verified reviews, and seamless project management.',
+  keywords: [
+    'freelance marketplace',
+    'hire freelancers',
+    'find remote work',
+    'freelance jobs',
+    'remote work',
+    'contract work',
+    'gig economy',
+    'freelance platform'
+  ],
+  openGraph: {
+    title: 'We Got Jobz - Where Talent Meets Opportunity',
+    description: 'Connect with top-rated freelancers and visionary companies. Secure escrow payments, verified reviews, and seamless project management.',
+    type: 'website',
+  },
+};
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'We Got Jobz',
+  description: 'Premier freelance marketplace connecting businesses with talented professionals worldwide',
+  url: process.env.NEXT_PUBLIC_APP_URL || 'https://we-gotjobz.com',
+  logo: `${process.env.NEXT_PUBLIC_APP_URL || 'https://we-gotjobz.com'}/logo.png`,
+  contactPoint: {
+    '@type': 'ContactPoint',
+    email: 'support@wegotjobz.com',
+    contactType: 'customer service',
+  },
+  sameAs: [
+    'https://twitter.com/wegotjobz',
+    'https://linkedin.com/company/wegotjobz',
+  ],
+};
 
 export default async function LandingPage() {
   const session = await getSession();
@@ -22,6 +61,10 @@ export default async function LandingPage() {
 
   return (
     <div className="flex flex-col min-h-screen">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <main className="flex-grow">
         {/* Hero Section */}
         <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-blue-950 to-indigo-950 text-white py-24 md:py-36">

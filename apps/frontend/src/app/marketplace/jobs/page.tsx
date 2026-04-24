@@ -4,6 +4,28 @@ import { useState, useEffect } from 'react';
 import JobCard from '@/components/features/job-card';
 import { JobsService } from '@/lib/jobs.service';
 import { Job } from '@/lib';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Browse Jobs',
+  description: 'Find your next freelance opportunity on We Got Jobz. Browse hundreds of remote jobs, contract work, and freelance projects from top companies worldwide.',
+  keywords: [
+    'browse jobs',
+    'freelance jobs',
+    'remote jobs',
+    'contract work',
+    'find work',
+    'job listings',
+    'freelance opportunities',
+    'remote positions',
+    'gig economy jobs',
+    'part-time remote work'
+  ],
+  openGraph: {
+    title: 'Browse Jobs - Find Your Next Freelance Opportunity',
+    description: 'Browse hundreds of remote jobs, contract work, and freelance projects from top companies worldwide. Secure payments and verified clients.',
+  },
+};
 
 export default function JobsPage() {
   const [jobs, setJobs] = useState<Job[]>([]);

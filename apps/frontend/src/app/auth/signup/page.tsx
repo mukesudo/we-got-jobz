@@ -9,6 +9,27 @@ import { Button } from "@/components/ui/button";
 import { Github } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Sign Up',
+  description: 'Create your free account on We Got Jobz and start connecting with top freelancers or finding your next freelance opportunity. Join thousands of professionals worldwide.',
+  keywords: [
+    'sign up',
+    'create account',
+    'register',
+    'join we got jobz',
+    'freelance platform signup',
+    'create freelancer account',
+    'create client account',
+    'get started freelancing',
+    'hire freelancers'
+  ],
+  robots: {
+    index: false,
+    follow: true,
+  },
+};
 
 const DEFAULT_RETURN_PATH = "/auth/select-role";
 

@@ -1,3 +1,22 @@
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'About Us',
+  description: 'Learn about We Got Jobz - the premier freelance marketplace connecting businesses with talented professionals worldwide. Our mission is to bridge the gap between talent and opportunity.',
+  keywords: [
+    'about we got jobz',
+    'freelance marketplace mission',
+    'company vision',
+    'our story',
+    'freelance platform values',
+    'remote work community'
+  ],
+  openGraph: {
+    title: 'About We Got Jobz - Our Mission & Vision',
+    description: 'Learn about our mission to connect businesses with talented professionals worldwide and create a fair, transparent marketplace.',
+  },
+};
+
 export default function AboutPage() {
   return (
     <div className="container mx-auto py-12 px-4 max-w-4xl">

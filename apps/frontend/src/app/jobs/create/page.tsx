@@ -14,6 +14,27 @@ import { Badge } from "@/components/ui/badge";
 import { X } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { Modal, ModalContent, ModalHeader, ModalTitle, ModalDescription, ModalFooter } from "@/components/ui/modal";
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Post a Job',
+  description: 'Post a job on We Got Jobz and connect with top-rated freelancers worldwide. Describe your project, set your budget, and start receiving proposals from verified talent.',
+  keywords: [
+    'post a job',
+    'create job posting',
+    'hire freelancers',
+    'post freelance project',
+    'find talent',
+    'job posting platform',
+    'hire remote workers',
+    'post contract work',
+    'freelance job board'
+  ],
+  robots: {
+    index: false,
+    follow: true,
+  },
+};
 
 export default function CreateJobPage() {
     const [isSubmitting, setIsSubmitting] = useState(false);
