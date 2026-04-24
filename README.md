@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://via.placeholder.com/800x200/0f172a/38bdf8?text=We+Got+Jobz" alt="We Got Jobz Banner" />
+  <img src="Screenshot 2026-04-24 at 4.45.44 PM.png" alt="We Got Jobz Banner" />
 
   <br />
   <br />
