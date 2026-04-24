@@ -6,30 +6,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import type { Metadata } from 'next';
-
-export const metadata: Metadata = {
-  title: 'Browse Freelancers',
-  description: 'Find the perfect freelancer for your project on We Got Jobz. Browse verified talent with reviews, portfolios, and skills. Hire developers, designers, writers, and more.',
-  keywords: [
-    'browse freelancers',
-    'find freelancers',
-    'hire freelancers',
-    'freelance talent',
-    'verified freelancers',
-    'freelancer profiles',
-    'expert developers',
-    'hire designers',
-    'freelance writers',
-    'remote talent',
-    'freelancer portfolio',
-    'top-rated freelancers'
-  ],
-  openGraph: {
-    title: 'Browse Freelancers - Find the Perfect Talent for Your Project',
-    description: 'Browse verified freelancers with reviews, portfolios, and skills. Hire developers, designers, writers, and more with secure payments.',
-  },
-};
 
 export default function TalentPage() {
     const [talent, setTalent] = useState([]);

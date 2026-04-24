@@ -8,24 +8,6 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { signIn } from '@/lib/auth-client';
 import { Button } from '@/components/ui/button';
 import { Github } from 'lucide-react';
-import type { Metadata } from 'next';
-
-export const metadata: Metadata = {
-  title: 'Login',
-  description: 'Log in to your We Got Jobz account to manage your projects, connect with freelancers, or find your next freelance opportunity.',
-  keywords: [
-    'login',
-    'sign in',
-    'account login',
-    'freelance platform login',
-    'access account',
-    'we got jobz login'
-  ],
-  robots: {
-    index: false,
-    follow: true,
-  },
-};
 
 const DEFAULT_RETURN_PATH = '/marketplace/jobs';
 
