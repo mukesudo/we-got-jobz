@@ -1,6 +1,6 @@
 import { Controller, Get, Body, Param, Put, UseGuards } from '@nestjs/common';
 import { AdminService } from './admin.service';
-import { UserRole } from '@prisma/client';
+import { UserRole } from '@we-got-jobz/db';
 import { UpdateUserRoleDto } from './dto/update-user-role.dto';
 import { UpdateContractStatusDto } from './dto/update-contract-status.dto';
 import { Roles } from '../common/decorators/roles.decorator';

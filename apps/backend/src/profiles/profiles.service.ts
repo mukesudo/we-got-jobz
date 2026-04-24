@@ -4,7 +4,7 @@ import { CreateFreelancerProfileDto } from './dto/create-freelancer-profile.dto'
 import { UpdateFreelancerProfileDto } from './dto/update-freelancer-profile.dto';
 import { CreateClientProfileDto } from './dto/create-client-profile.dto';
 import { UpdateClientProfileDto } from './dto/update-client-profile.dto';
-import { UserRole } from '@prisma/client';
+import { UserRole } from '@we-got-jobz/db';
 
 @Injectable()
 export class ProfilesService {

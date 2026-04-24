@@ -17,7 +17,7 @@ import { Roles } from '../common/decorators/roles.decorator';
 import { RolesGuard } from '../auth/roles.guard';
 import { UserRole } from '@we-got-jobz/common'; // Changed import
 import { CurrentUser } from '../common/decorators/current-user.decorator';
-import type { User } from '@prisma/client'; // Changed to import type
+import type { User } from '@we-got-jobz/db'; // Changed to import type
 
 @Controller('jobs')
 export class JobsController {

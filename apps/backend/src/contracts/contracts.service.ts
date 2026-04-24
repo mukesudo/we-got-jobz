@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { ContractStatus } from '@prisma/client';
+import { ContractStatus } from '@we-got-jobz/db';
 
 @Injectable()
 export class ContractsService {

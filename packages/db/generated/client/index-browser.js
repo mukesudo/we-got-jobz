@@ -128,6 +128,10 @@ exports.Prisma.UserScalarFieldEnum = {
   image: 'image',
   role: 'role',
   isActive: 'isActive',
+  notificationsEmail: 'notificationsEmail',
+  notificationsMarketing: 'notificationsMarketing',
+  notificationsJobAlerts: 'notificationsJobAlerts',
+  notificationsMessages: 'notificationsMessages',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -135,25 +139,28 @@ exports.Prisma.UserScalarFieldEnum = {
 exports.Prisma.AccountScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
-  type: 'type',
-  provider: 'provider',
-  providerAccountId: 'providerAccountId',
-  refresh_token: 'refresh_token',
-  access_token: 'access_token',
-  expires_at: 'expires_at',
-  token_type: 'token_type',
+  accountId: 'accountId',
+  providerId: 'providerId',
+  accessToken: 'accessToken',
+  refreshToken: 'refreshToken',
+  idToken: 'idToken',
+  accessTokenExpiresAt: 'accessTokenExpiresAt',
+  refreshTokenExpiresAt: 'refreshTokenExpiresAt',
   scope: 'scope',
-  id_token: 'id_token',
-  session_state: 'session_state'
+  password: 'password',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.SessionScalarFieldEnum = {
   id: 'id',
-  sessionToken: 'sessionToken',
   userId: 'userId',
-  expires: 'expires',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  expiresAt: 'expiresAt',
+  token: 'token',
+  ipAddress: 'ipAddress',
+  userAgent: 'userAgent'
 };
 
 exports.Prisma.FreelancerProfileScalarFieldEnum = {
@@ -279,6 +286,15 @@ exports.Prisma.WalletScalarFieldEnum = {
   balance: 'balance'
 };
 
+exports.Prisma.VerificationScalarFieldEnum = {
+  id: 'id',
+  identifier: 'identifier',
+  value: 'value',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -361,7 +377,8 @@ exports.Prisma.ModelName = {
   Review: 'Review',
   Transaction: 'Transaction',
   Message: 'Message',
-  Wallet: 'Wallet'
+  Wallet: 'Wallet',
+  Verification: 'Verification'
 };
 
 /**

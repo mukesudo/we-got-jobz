@@ -11,14 +11,14 @@ import {
 import { ProfilesService } from './profiles.service';
 import { AllowAnonymous, Session } from '@thallesp/nestjs-better-auth'; // Keep Session for consistency
 import { CurrentUser } from '../common/decorators/current-user.decorator';
-import { UserRole } from '@prisma/client';
+import { UserRole } from '@we-got-jobz/db';
 import { Roles } from '../common/decorators/roles.decorator';
 import { RolesGuard } from '../auth/roles.guard';
 import { CreateFreelancerProfileDto } from './dto/create-freelancer-profile.dto';
 import { UpdateFreelancerProfileDto } from './dto/update-freelancer-profile.dto';
 import { CreateClientProfileDto } from './dto/create-client-profile.dto';
 import { UpdateClientProfileDto } from './dto/update-client-profile.dto';
-import type { User } from '@prisma/client';
+import type { User } from '@we-got-jobz/db';
 
 @Controller('profiles')
 export class ProfilesController {

@@ -2,7 +2,7 @@ import { Body, Controller, Get, Param, Patch, Post, UnauthorizedException } from
 import { ContractsService } from './contracts.service';
 import { AllowAnonymous, Session } from '@thallesp/nestjs-better-auth';
 import type { UserSession } from '@thallesp/nestjs-better-auth';
-import { Contract, ContractStatus } from '@prisma/client';
+import { Contract, ContractStatus } from '@we-got-jobz/db';
 
 @Controller('contracts')
 export class ContractsController {

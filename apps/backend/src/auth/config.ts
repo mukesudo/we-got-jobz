@@ -2,7 +2,7 @@
 import { betterAuth } from 'better-auth';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
 import { prisma } from '@we-got-jobz/db'; // Import from our shared client
-import { UserRole } from '@prisma/client';
+import { UserRole } from '@we-got-jobz/db';
 
 const DEFAULT_BACKEND_URL = 'http://localhost:3000';
 const DEFAULT_FRONTEND_URL = 'http://localhost:3001';

@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { Bid, BidStatus } from '@prisma/client';
+import { Bid, BidStatus } from '@we-got-jobz/db';
 
 @Injectable()
 export class ProposalsService {

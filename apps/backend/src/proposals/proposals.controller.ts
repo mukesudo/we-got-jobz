@@ -1,7 +1,7 @@
 import { Controller, Get, Param } from '@nestjs/common';
 import { ProposalsService } from './proposals.service';
 import { AllowAnonymous } from '@thallesp/nestjs-better-auth';
-import { Bid } from '@prisma/client'; // Import Prisma's generated Bid type
+import { Bid } from '@we-got-jobz/db';
 
 @Controller('proposals')
 export class ProposalsController {
