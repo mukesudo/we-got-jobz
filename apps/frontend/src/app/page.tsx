@@ -65,7 +65,7 @@ export default async function LandingPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <meta name="google-site-verification" content="TisjEgAeymUqCQ_uC4Q6Jb5zS_zvGfTz1gDlM6wmjDk" />
+      <meta name="google-site-verification" content={process.env.GOOGLE_SITE_VERIFICATION} />
       <main className="flex-grow">
         {/* Hero Section */}
         <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-blue-950 to-indigo-950 text-white py-24 md:py-36">

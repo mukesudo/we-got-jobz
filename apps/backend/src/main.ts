@@ -4,6 +4,7 @@ dotenv.config({ path: '../../.env' }); // Adjust path as necessary, assuming .en
 import { NestFactory, HttpAdapterHost } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { json, urlencoded } from 'express';
 import { AppModule } from './app.module';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
@@ -23,7 +24,12 @@ async function bootstrap() {
       forbidNonWhitelisted: false,
     }),
   );
-  // app.setGlobalPrefix('api');
+  app.setGlobalPrefix('api');
+
+  // Re-enable body parsing for non-auth routes (BetterAuth needs bodyParser: false)
+  app.use(json({ limit: '10mb' }));
+  app.use(urlencoded({ extended: true, limit: '10mb' }));
+
   app.enableCors({
     origin: process.env.CORS_ORIGIN || ['http://localhost:3001'],
     credentials: true,
