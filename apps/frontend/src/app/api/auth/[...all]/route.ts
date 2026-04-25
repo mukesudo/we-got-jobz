@@ -27,11 +27,23 @@ async function proxyAuth(request: NextRequest, context: RouteContext) {
 
   const response = await fetch(targetUrl.toString(), init);
 
-  return new NextResponse(response.body, {
+  const nextResponse = new NextResponse(response.body, {
     status: response.status,
     statusText: response.statusText,
-    headers: response.headers,
   });
+
+  response.headers.forEach((value, key) => {
+    if (key.toLowerCase() !== "set-cookie") {
+      nextResponse.headers.set(key, value);
+    }
+  });
+
+  const setCookies = (response.headers as any).getSetCookie?.();
+  if (setCookies && Array.isArray(setCookies)) {
+    setCookies.forEach((cookie) => nextResponse.headers.append("Set-Cookie", cookie));
+  }
+
+  return nextResponse;
 }
 
 export async function GET(request: NextRequest, context: RouteContext) {
