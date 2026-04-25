@@ -1,0 +1,31 @@
+# Frontend Dockerfile - Simple build without Turborepo for Render
+FROM node:20-alpine AS base
+RUN apk add --no-cache libc6-compat
+WORKDIR /app
+
+FROM base AS builder
+# Copy frontend package files
+COPY apps/frontend/package.json ./apps/frontend/
+COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
+COPY packages ./packages
+# Install pnpm
+RUN npm install -g pnpm@9.15.4
+# Install dependencies in frontend directory
+RUN cd apps/frontend && pnpm install --frozen-lockfile --dev
+# Build frontend
+RUN cd apps/frontend && npx next build
+
+FROM node:20-alpine AS runner
+RUN apk add --no-cache libc6-compat
+WORKDIR /app
+ENV NODE_ENV=production
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+USER nextjs
+
+COPY --from=builder /app/apps/frontend/.next/standalone ./
+COPY --from=builder /app/apps/frontend/.next/static ./apps/frontend/.next/static
+COPY --from=builder /app/apps/frontend/public ./apps/frontend/public
+
+EXPOSE 3001
+CMD ["node", "apps/frontend/server.js"]

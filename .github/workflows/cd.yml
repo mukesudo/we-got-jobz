@@ -52,7 +52,7 @@ jobs:
       uses: docker/build-push-action@v4
       with:
         context: .
-        file: ./apps/backend/Dockerfile
+        file: ./apps/backend/Dockerfile.github
         push: true
         tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/backend:latest
         cache-from: type=gha
@@ -62,7 +62,7 @@ jobs:
       uses: docker/build-push-action@v4
       with:
         context: .
-        file: ./apps/frontend/Dockerfile
+        file: ./apps/frontend/Dockerfile.github
         push: true
         tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/frontend:latest
         cache-from: type=gha
