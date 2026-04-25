@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Enterprise-scale freelance marketplace with Next.js, NestJS",
   "private": true,
+  "type": "module",
   "author": "mukesudo",
   "license": "MIT",
   "homepage": "https://github.com/mukesudo/we-got-jobz",
