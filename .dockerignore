@@ -1,0 +1,17 @@
+node_modules
+.git
+.turbo
+dist
+.next
+build
+coverage
+*.log
+.env
+.env.local
+.env.*.local
+.DS_Store
+.vscode
+.idea
+docker-compose*.yml
+Dockerfile*
+*.md
