@@ -19,7 +19,7 @@ export default function EditProfilePage() {
     const fetchProfile = async () => {
       try {
         // Assuming GET /users/profile returns the current user's profile
-        const res = await fetch('http://localhost:3000/users/profile', {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/users/profile`, {
           // headers: { 'Authorization': `Bearer ${token}` }
         });
         
@@ -44,7 +44,7 @@ export default function EditProfilePage() {
     setMessage(null);
 
     try {
-      const res = await fetch('http://localhost:3000/users/profile', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/users/profile`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',

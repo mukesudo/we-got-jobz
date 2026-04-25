@@ -1,34 +1,7 @@
 import { createAuthClient } from "better-auth/react";
 
-function trimTrailingSlash(value: string): string {
-  return value.replace(/\/+$/, "");
-}
-
-function isValidAbsoluteUrl(value: string): boolean {
-  try {
-    const parsed = new URL(value);
-    return parsed.protocol === "http:" || parsed.protocol === "https:";
-  } catch {
-    return false;
-  }
-}
-
-function resolveAuthBaseURL(): string {
-  const explicitAuthBase = process.env.NEXT_PUBLIC_AUTH_BASE_URL;
-  if (explicitAuthBase && isValidAbsoluteUrl(explicitAuthBase)) {
-    return trimTrailingSlash(explicitAuthBase);
-  }
-
-  const appBase = process.env.NEXT_PUBLIC_APP_URL;
-  if (appBase && isValidAbsoluteUrl(appBase)) {
-    return trimTrailingSlash(appBase);
-  }
-
-  return "http://localhost:3001";
-}
-
 export const authClient = createAuthClient({
-  baseURL: resolveAuthBaseURL(),
+  baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000",
 });
 
 export const {
