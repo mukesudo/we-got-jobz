@@ -87,6 +87,13 @@ export const auth = betterAuth({
   trustedOrigins,
   sessionExpiresIn: 60 * 60 * 24 * 7,
   callbackURL: `${frontendBaseURL}/auth/select-role`,
+  advanced: {
+    defaultCookieAttributes: {
+      sameSite: 'none',
+      secure: true,
+      httpOnly: true,
+    },
+  },
   inject: process.env.DATABASE_URL,
   userCreated: async (user: { id: string; role?: UserRole | null }) => {
     const role = user.role ?? UserRole.CLIENT;
