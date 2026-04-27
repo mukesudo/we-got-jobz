@@ -273,6 +273,13 @@ export default function Navbar() {
                         Profile
                       </Link>
                       <Link
+                        href="/marketplace/profile/edit"
+                        onClick={() => setShowUserMenu(false)}
+                        className="block px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition-colors"
+                      >
+                        Edit Profile
+                      </Link>
+                      <Link
                         href="/marketplace/settings"
                         onClick={() => setShowUserMenu(false)}
                         className="block px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition-colors"
@@ -401,6 +408,13 @@ export default function Navbar() {
                   className="block px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-100 rounded-lg"
                 >
                   Profile
+                </Link>
+                <Link
+                  href="/marketplace/profile/edit"
+                  onClick={() => setIsOpen(false)}
+                  className="block px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-100 rounded-lg"
+                >
+                  Edit Profile
                 </Link>
                 <Link
                   href="/marketplace/settings"
