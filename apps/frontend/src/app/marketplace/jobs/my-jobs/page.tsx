@@ -26,7 +26,7 @@ export default function MyJobsPage() {
 
     const fetchMyJobs = async () => {
       try {
-        const res = await fetch(`${BACKEND_URL}/jobs/client/${session.user.id}`);
+        const res = await fetch(`${BACKEND_URL}/api/jobs/client/${session.user.id}`, { credentials: 'include' });
         if (res.ok) {
           const data = await res.json();
           setJobs(data);
@@ -44,7 +44,7 @@ export default function MyJobsPage() {
   const handleDelete = async (id: string) => {
     if (!confirm("Are you sure you want to delete this job?")) return;
     try {
-      const res = await fetch(`${BACKEND_URL}/jobs/${id}`, {
+      const res = await fetch(`${BACKEND_URL}/api/jobs/${id}`, {
         method: "DELETE",
         credentials: "include",
       });

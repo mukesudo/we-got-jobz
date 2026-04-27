@@ -11,7 +11,7 @@ export function DebugBackend() {
     async function run() {
       try {
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/health`,
+          `${process.env.NEXT_PUBLIC_API_URL}/api/health`,
           { credentials: "include" }
         );
         if (!res.ok) throw new Error(`Status ${res.status}\nUrl ${process.env.NEXT_PUBLIC_API_URL}`);

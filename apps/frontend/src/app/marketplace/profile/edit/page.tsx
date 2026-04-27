@@ -39,7 +39,7 @@ export default function EditProfilePage() {
 
     const fetchProfile = async () => {
       try {
-        const res = await fetch(`${BACKEND_URL}/profiles/${session.user.id}`);
+        const res = await fetch(`${BACKEND_URL}/api/profiles/${session.user.id}`, { credentials: 'include' });
         if (res.ok) {
           const data = await res.json();
           setFormData({
@@ -70,7 +70,7 @@ export default function EditProfilePage() {
     try {
       // We assume session.user.role is either CLIENT or FREELANCER
       const role = (session?.user as any)?.role;
-      const endpoint = role === "CLIENT" ? "/profiles/client" : "/profiles/freelancer";
+      const endpoint = role === "CLIENT" ? "/api/profiles/client" : "/api/profiles/freelancer";
       
       let payload: any = {};
       

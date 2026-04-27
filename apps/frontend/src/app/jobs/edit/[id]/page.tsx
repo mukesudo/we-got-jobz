@@ -117,7 +117,7 @@ export default function EditJobPage() {
             }
 
             const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
-            const response = await fetch(`${BACKEND_URL}/jobs/${params.id}`, {
+            const response = await fetch(`${BACKEND_URL}/api/jobs/${params.id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload),

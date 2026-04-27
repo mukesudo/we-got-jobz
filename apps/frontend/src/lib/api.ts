@@ -1,8 +1,10 @@
 import axios from 'axios';
 import { toast } from '@/hooks/use-toast';
 
+const API_ROOT = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000').replace(/\/+$/, '');
+
 export const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000',
+  baseURL: `${API_ROOT}/api`,
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',

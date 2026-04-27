@@ -41,7 +41,7 @@ const safeJson = async <T,>(response: Response): Promise<T | null> => {
 };
 
 async function fetchProfile(id: string): Promise<UserProfile | null> {
-  const freelancerResponse = await fetch(`${BACKEND_URL}/talent/${id}`, {
+  const freelancerResponse = await fetch(`${BACKEND_URL}/api/talent/${id}`, {
     cache: "no-store",
   });
   if (freelancerResponse.ok) {
@@ -49,7 +49,7 @@ async function fetchProfile(id: string): Promise<UserProfile | null> {
     if (data) return data;
   }
 
-  const response = await fetch(`${BACKEND_URL}/profiles/${id}`, {
+  const response = await fetch(`${BACKEND_URL}/api/profiles/${id}`, {
     cache: "no-store",
   });
   if (!response.ok) return null;

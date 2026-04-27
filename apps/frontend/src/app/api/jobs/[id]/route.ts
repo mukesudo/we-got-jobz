@@ -8,7 +8,7 @@ type RouteContext = {
 
 export async function GET(_: NextRequest, { params }: RouteContext) {
   const { id } = await params;
-  const res = await fetch(`${BACKEND_URL}/jobs/${id}`);
+  const res = await fetch(`${BACKEND_URL}/api/jobs/${id}`);
   const data = await res.json();
   return NextResponse.json(data, { status: res.status });
 }
@@ -16,7 +16,7 @@ export async function GET(_: NextRequest, { params }: RouteContext) {
 export async function PUT(request: NextRequest, { params }: RouteContext) {
   const { id } = await params;
   const body = await request.json();
-  const res = await fetch(`${BACKEND_URL}/jobs/${id}`, {
+  const res = await fetch(`${BACKEND_URL}/api/jobs/${id}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -30,7 +30,7 @@ export async function PUT(request: NextRequest, { params }: RouteContext) {
 
 export async function DELETE(_: NextRequest, { params }: RouteContext) {
   const { id } = await params;
-  const res = await fetch(`${BACKEND_URL}/jobs/${id}`, {
+  const res = await fetch(`${BACKEND_URL}/api/jobs/${id}`, {
     method: 'DELETE',
   });
   const data = await res.json();

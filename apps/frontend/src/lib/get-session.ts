@@ -13,7 +13,7 @@ export async function getSession() {
   }
 
   try {
-    const response = await fetch(`${BACKEND_URL}/auth/session`, {
+    const response = await fetch(`${BACKEND_URL}/api/auth/get-session`, {
       headers: { Cookie: cookie },
       cache: 'no-store',
     });

@@ -19,8 +19,8 @@ export default function EditProfilePage() {
     const fetchProfile = async () => {
       try {
         // Assuming GET /users/profile returns the current user's profile
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/users/profile`, {
-          // headers: { 'Authorization': `Bearer ${token}` }
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/users/me`, {
+          credentials: 'include',
         });
         
         if (res.ok) {
@@ -44,11 +44,11 @@ export default function EditProfilePage() {
     setMessage(null);
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/users/profile`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/users/me`, {
         method: 'PATCH',
+        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
-          // 'Authorization': `Bearer ${token}`, // Add auth token here
         },
         body: JSON.stringify(formData),
       });

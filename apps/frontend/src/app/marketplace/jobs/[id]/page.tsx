@@ -44,7 +44,7 @@ type JobDetails = {
 };
 
 const getJobDetails = async (id: string): Promise<JobDetails | null> => {
-  const response = await fetch(`${BACKEND_URL}/jobs/${id}`, {
+  const response = await fetch(`${BACKEND_URL}/api/jobs/${id}`, {
     cache: "no-store",
   });
   if (!response.ok) return null;
