@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Background rounded square -->
+  <rect x="56" y="56" width="400" height="400" rx="96" fill="#2563eb"/>
+  <!-- Head -->
+  <circle cx="256" cy="200" r="64" fill="white"/>
+  <!-- Shoulders -->
+  <path d="M128 416c0-70.7 57.3-128 128-128s128 57.3 128 128" fill="white"/>
+</svg>

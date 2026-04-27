@@ -81,6 +81,11 @@ export const metadata: Metadata = {
   verification: {
     google: process.env.GOOGLE_SITE_VERIFICATION,
   },
+  icons: {
+    icon: '/logo-badge.svg',
+    shortcut: '/logo-badge.svg',
+    apple: '/logo-badge.svg',
+  },
 };
 
 export const viewport: Viewport = {
