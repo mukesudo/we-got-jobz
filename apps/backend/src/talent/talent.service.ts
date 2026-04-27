@@ -90,18 +90,46 @@ export class TalentService {
   }
 
   async findOne(id: string) {
-    return this.prisma.user.findUnique({
-      where: {
-        id,
-        role: UserRole.FREELANCER,
-      },
+    const user = await this.prisma.user.findUnique({
+      where: { id, role: UserRole.FREELANCER },
       include: {
-        freelancerProfile: {
-          include: {
-            skills: true,
-          },
-        },
+        freelancerProfile: { include: { skills: true } },
       },
     });
+    if (!user) return null;
+
+    const [completedContracts, reviews] = await Promise.all([
+      this.prisma.contract.findMany({
+        where: { freelancerId: id, status: 'COMPLETED' },
+        orderBy: { endedAt: 'desc' },
+        include: {
+          project: {
+            select: { id: true, title: true, description: true },
+          },
+          client: { select: { id: true, name: true, image: true } },
+        },
+        take: 20,
+      }),
+      this.prisma.review.findMany({
+        where: { reviewedId: id },
+        orderBy: { createdAt: 'desc' },
+        include: {
+          reviewer: { select: { id: true, name: true, image: true } },
+          contract: {
+            select: {
+              id: true,
+              project: { select: { id: true, title: true } },
+            },
+          },
+        },
+        take: 20,
+      }),
+    ]);
+
+    return {
+      ...user,
+      completedContracts,
+      reviews,
+    };
   }
 }

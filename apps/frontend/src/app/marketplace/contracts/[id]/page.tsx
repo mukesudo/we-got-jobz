@@ -9,6 +9,7 @@ import {
   type Milestone,
   type MilestoneStatus,
 } from "@/lib/milestones.service";
+import { ReviewsService, type Review } from "@/lib/reviews.service";
 import type { Contract } from "@/lib";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -28,6 +29,7 @@ import {
   Upload,
   XCircle,
   AlertCircle,
+  Star,
 } from "lucide-react";
 
 const statusBadge: Record<MilestoneStatus, { label: string; tone: string }> = {
@@ -54,6 +56,7 @@ export default function ContractDetailPage({
 
   const [contract, setContract] = useState<Contract | null>(null);
   const [milestones, setMilestones] = useState<Milestone[]>([]);
+  const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
@@ -70,6 +73,10 @@ export default function ContractDetailPage({
   const [submittingFor, setSubmittingFor] = useState<string | null>(null);
   const [submitForm, setSubmitForm] = useState({ note: "", url: "" });
 
+  // Review form
+  const [reviewForm, setReviewForm] = useState({ rating: 5, comment: "" });
+  const [showReviewForm, setShowReviewForm] = useState(false);
+
   const isClient = contract?.clientId === userId;
   const isFreelancer = contract?.freelancerId === userId;
 
@@ -83,6 +90,12 @@ export default function ContractDetailPage({
       ]);
       setContract(c);
       setMilestones(m);
+      try {
+        const rv = await ReviewsService.listByContract(id);
+        setReviews(rv);
+      } catch {
+        setReviews([]);
+      }
     } catch (err: any) {
       setError(err?.response?.data?.message || err?.message || "Failed to load contract");
     } finally {
@@ -156,6 +169,29 @@ export default function ContractDetailPage({
       setSubmittingFor(null);
     });
   };
+
+  const handleSubmitReview = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!reviewForm.rating || reviewForm.rating < 1 || reviewForm.rating > 5) {
+      setError("Please select a rating between 1 and 5.");
+      return;
+    }
+    await runAction("review", async () => {
+      const rv = await ReviewsService.create(id, {
+        rating: reviewForm.rating,
+        comment: reviewForm.comment.trim() || undefined,
+      });
+      setReviews((prev) => [rv, ...prev]);
+      setReviewForm({ rating: 5, comment: "" });
+      setShowReviewForm(false);
+    });
+  };
+
+  const myReview = reviews.find((r) => r.reviewerId === userId);
+  const canReview =
+    contract?.status === "COMPLETED" &&
+    (isClient || isFreelancer) &&
+    !myReview;
 
   if (loading) {
     return <div className="container mx-auto px-4 py-8">Loading contract...</div>;
@@ -557,6 +593,142 @@ export default function ContractDetailPage({
           })}
         </div>
       )}
+
+      {/* Reviews */}
+      <div className="mt-10">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-semibold">Reviews</h2>
+          {canReview && (
+            <Button
+              size="sm"
+              onClick={() => setShowReviewForm((v) => !v)}
+            >
+              {showReviewForm ? "Cancel" : "Write a review"}
+            </Button>
+          )}
+        </div>
+
+        {showReviewForm && (
+          <Card className="p-5 mb-4">
+            <form onSubmit={handleSubmitReview} className="space-y-4">
+              <div>
+                <Label>Rating</Label>
+                <div className="flex gap-1 mt-2">
+                  {[1, 2, 3, 4, 5].map((n) => (
+                    <button
+                      key={n}
+                      type="button"
+                      onClick={() =>
+                        setReviewForm({ ...reviewForm, rating: n })
+                      }
+                      className="p-1"
+                    >
+                      <Star
+                        className={`h-6 w-6 ${
+                          n <= reviewForm.rating
+                            ? "fill-amber-400 text-amber-400"
+                            : "text-slate-300"
+                        }`}
+                      />
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <Label htmlFor="review-comment">Comment (optional)</Label>
+                <Textarea
+                  id="review-comment"
+                  rows={3}
+                  value={reviewForm.comment}
+                  onChange={(e) =>
+                    setReviewForm({
+                      ...reviewForm,
+                      comment: e.target.value,
+                    })
+                  }
+                  placeholder="How was working with them?"
+                />
+              </div>
+              <div className="flex justify-end gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setShowReviewForm(false)}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  disabled={actionLoading === "review"}
+                >
+                  {actionLoading === "review"
+                    ? "Submitting..."
+                    : "Submit review"}
+                </Button>
+              </div>
+            </form>
+          </Card>
+        )}
+
+        {reviews.length === 0 ? (
+          <Card className="p-10 text-center">
+            <p className="text-sm text-slate-500">
+              {contract.status === "COMPLETED"
+                ? "No reviews yet."
+                : "Reviews will be available once the contract is completed."}
+            </p>
+          </Card>
+        ) : (
+          <div className="space-y-3">
+            {reviews.map((r) => (
+              <Card key={r.id} className="p-5">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-slate-200 overflow-hidden">
+                      {r.reviewer?.image ? (
+                        <img
+                          src={r.reviewer.image}
+                          alt=""
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-xs font-bold text-slate-500">
+                          {r.reviewer?.name?.charAt(0) || "U"}
+                        </div>
+                      )}
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-slate-900">
+                        {r.reviewer?.name || "Anonymous"}
+                      </p>
+                      <p className="text-xs text-slate-500">
+                        {new Date(r.createdAt).toLocaleDateString()}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    {[1, 2, 3, 4, 5].map((n) => (
+                      <Star
+                        key={n}
+                        className={`h-4 w-4 ${
+                          n <= r.rating
+                            ? "fill-amber-400 text-amber-400"
+                            : "text-slate-300"
+                        }`}
+                      />
+                    ))}
+                  </div>
+                </div>
+                {r.comment && (
+                  <p className="mt-3 text-sm text-slate-700 whitespace-pre-wrap">
+                    {r.comment}
+                  </p>
+                )}
+              </Card>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

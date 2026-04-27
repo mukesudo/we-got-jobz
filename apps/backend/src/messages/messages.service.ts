@@ -25,13 +25,8 @@ export class MessagesService {
         projectId,
       },
       include: {
-        sender: {
-          select: {
-            id: true,
-            name: true,
-            image: true,
-          },
-        },
+        sender: { select: { id: true, name: true, image: true } },
+        receiver: { select: { id: true, name: true, image: true } },
       },
     });
 
@@ -52,13 +47,8 @@ export class MessagesService {
       skip,
       take,
       include: {
-        sender: {
-          select: {
-            id: true,
-            name: true,
-            image: true,
-          },
-        },
+        sender: { select: { id: true, name: true, image: true } },
+        receiver: { select: { id: true, name: true, image: true } },
       },
       orderBy: { createdAt: 'asc' },
     });
@@ -72,13 +62,8 @@ export class MessagesService {
       skip,
       take,
       include: {
-        sender: {
-          select: {
-            id: true,
-            name: true,
-            image: true,
-          },
-        },
+        sender: { select: { id: true, name: true, image: true } },
+        receiver: { select: { id: true, name: true, image: true } },
       },
       orderBy: { createdAt: 'desc' },
     });
@@ -108,13 +93,8 @@ export class MessagesService {
         isRead: false,
       },
       include: {
-        sender: {
-          select: {
-            id: true,
-            name: true,
-            image: true,
-          },
-        },
+        sender: { select: { id: true, name: true, image: true } },
+        receiver: { select: { id: true, name: true, image: true } },
       },
       orderBy: { createdAt: 'desc' },
     });
