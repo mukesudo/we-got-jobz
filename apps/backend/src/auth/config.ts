@@ -84,6 +84,59 @@ export const auth = betterAuth({
       redirectURI: `${backendBaseURL}/api/auth/callback/github`,
     },
   },
+  // When a user signs in via a social provider with the same email as an
+  // existing local account, automatically link the accounts. This lets users
+  // who originally registered via email/password sign in via GitHub or Google
+  // and have their avatars / profiles merged.
+  account: {
+    accountLinking: {
+      enabled: true,
+      trustedProviders: ['google', 'github'],
+    },
+  },
+  databaseHooks: {
+    user: {
+      // After any user record is updated (incl. social linking), backfill the
+      // image from the linked OAuth account if the user has no image yet.
+      update: {
+        after: async (user: { id: string; image?: string | null }) => {
+          try {
+            if (user.image) return;
+            const account = await prisma.account.findFirst({
+              where: {
+                userId: user.id,
+                providerId: { in: ['github', 'google'] },
+              },
+              orderBy: { createdAt: 'desc' },
+            });
+            if (!account) return;
+
+            // Try the GitHub user endpoint first if we have a token.
+            if (account.providerId === 'github' && account.accessToken) {
+              const res = await fetch('https://api.github.com/user', {
+                headers: {
+                  Authorization: `Bearer ${account.accessToken}`,
+                  'User-Agent': 'we-got-jobz',
+                },
+              });
+              if (res.ok) {
+                const data = (await res.json()) as { avatar_url?: string };
+                if (data.avatar_url) {
+                  await prisma.user.update({
+                    where: { id: user.id },
+                    data: { image: data.avatar_url },
+                  });
+                }
+              }
+            }
+          } catch (err) {
+            // Best-effort; never fail auth flow on avatar backfill.
+            console.warn('Failed to backfill social avatar', err);
+          }
+        },
+      },
+    },
+  },
   trustedOrigins,
   sessionExpiresIn: 60 * 60 * 24 * 7,
   callbackURL: `${frontendBaseURL}/auth/select-role`,

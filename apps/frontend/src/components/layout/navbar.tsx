@@ -110,12 +110,20 @@ export default function Navbar() {
             {session?.user ? (
               <>
                 {(session.user as any).role === 'CLIENT' ? (
-                  <Link
-                    href="/marketplace/jobs/my-jobs"
-                    className="px-3 py-2 text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
-                  >
-                    My Jobs
-                  </Link>
+                  <>
+                    <Link
+                      href="/marketplace/jobs/my-jobs"
+                      className="px-3 py-2 text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
+                    >
+                      My Jobs
+                    </Link>
+                    <Link
+                      href="/marketplace/talent"
+                      className="px-3 py-2 text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
+                    >
+                      Find Talent
+                    </Link>
+                  </>
                 ) : (
                   <Link
                     href="/marketplace/jobs"
@@ -336,13 +344,22 @@ export default function Navbar() {
                 </div>
 
                 {(session.user as any).role === 'CLIENT' ? (
-                  <Link
-                    href="/marketplace/jobs/my-jobs"
-                    onClick={() => setIsOpen(false)}
-                    className="block px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-100 rounded-lg"
-                  >
-                    My Jobs
-                  </Link>
+                  <>
+                    <Link
+                      href="/marketplace/jobs/my-jobs"
+                      onClick={() => setIsOpen(false)}
+                      className="block px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-100 rounded-lg"
+                    >
+                      My Jobs
+                    </Link>
+                    <Link
+                      href="/marketplace/talent"
+                      onClick={() => setIsOpen(false)}
+                      className="block px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-100 rounded-lg"
+                    >
+                      Find Talent
+                    </Link>
+                  </>
                 ) : (
                   <Link
                     href="/marketplace/jobs"

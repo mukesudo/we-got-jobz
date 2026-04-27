@@ -244,6 +244,13 @@ exports.Prisma.MilestoneScalarFieldEnum = {
   contractId: 'contractId',
   dueDate: 'dueDate',
   completedAt: 'completedAt',
+  submissionNote: 'submissionNote',
+  submissionUrl: 'submissionUrl',
+  submittedAt: 'submittedAt',
+  fundedAt: 'fundedAt',
+  releasedAt: 'releasedAt',
+  rejectedReason: 'rejectedReason',
+  createdAt: 'createdAt',
   projectId: 'projectId'
 };
 

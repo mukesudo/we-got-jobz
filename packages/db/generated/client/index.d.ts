@@ -14673,6 +14673,13 @@ export namespace Prisma {
     contractId: string | null
     dueDate: Date | null
     completedAt: Date | null
+    submissionNote: string | null
+    submissionUrl: string | null
+    submittedAt: Date | null
+    fundedAt: Date | null
+    releasedAt: Date | null
+    rejectedReason: string | null
+    createdAt: Date | null
     projectId: string | null
   }
 
@@ -14685,6 +14692,13 @@ export namespace Prisma {
     contractId: string | null
     dueDate: Date | null
     completedAt: Date | null
+    submissionNote: string | null
+    submissionUrl: string | null
+    submittedAt: Date | null
+    fundedAt: Date | null
+    releasedAt: Date | null
+    rejectedReason: string | null
+    createdAt: Date | null
     projectId: string | null
   }
 
@@ -14697,6 +14711,13 @@ export namespace Prisma {
     contractId: number
     dueDate: number
     completedAt: number
+    submissionNote: number
+    submissionUrl: number
+    submittedAt: number
+    fundedAt: number
+    releasedAt: number
+    rejectedReason: number
+    createdAt: number
     projectId: number
     _all: number
   }
@@ -14719,6 +14740,13 @@ export namespace Prisma {
     contractId?: true
     dueDate?: true
     completedAt?: true
+    submissionNote?: true
+    submissionUrl?: true
+    submittedAt?: true
+    fundedAt?: true
+    releasedAt?: true
+    rejectedReason?: true
+    createdAt?: true
     projectId?: true
   }
 
@@ -14731,6 +14759,13 @@ export namespace Prisma {
     contractId?: true
     dueDate?: true
     completedAt?: true
+    submissionNote?: true
+    submissionUrl?: true
+    submittedAt?: true
+    fundedAt?: true
+    releasedAt?: true
+    rejectedReason?: true
+    createdAt?: true
     projectId?: true
   }
 
@@ -14743,6 +14778,13 @@ export namespace Prisma {
     contractId?: true
     dueDate?: true
     completedAt?: true
+    submissionNote?: true
+    submissionUrl?: true
+    submittedAt?: true
+    fundedAt?: true
+    releasedAt?: true
+    rejectedReason?: true
+    createdAt?: true
     projectId?: true
     _all?: true
   }
@@ -14842,6 +14884,13 @@ export namespace Prisma {
     contractId: string
     dueDate: Date | null
     completedAt: Date | null
+    submissionNote: string | null
+    submissionUrl: string | null
+    submittedAt: Date | null
+    fundedAt: Date | null
+    releasedAt: Date | null
+    rejectedReason: string | null
+    createdAt: Date
     projectId: string
     _count: MilestoneCountAggregateOutputType | null
     _avg: MilestoneAvgAggregateOutputType | null
@@ -14873,6 +14922,13 @@ export namespace Prisma {
     contractId?: boolean
     dueDate?: boolean
     completedAt?: boolean
+    submissionNote?: boolean
+    submissionUrl?: boolean
+    submittedAt?: boolean
+    fundedAt?: boolean
+    releasedAt?: boolean
+    rejectedReason?: boolean
+    createdAt?: boolean
     projectId?: boolean
     contract?: boolean | ContractDefaultArgs<ExtArgs>
     project?: boolean | ProjectDefaultArgs<ExtArgs>
@@ -14887,6 +14943,13 @@ export namespace Prisma {
     contractId?: boolean
     dueDate?: boolean
     completedAt?: boolean
+    submissionNote?: boolean
+    submissionUrl?: boolean
+    submittedAt?: boolean
+    fundedAt?: boolean
+    releasedAt?: boolean
+    rejectedReason?: boolean
+    createdAt?: boolean
     projectId?: boolean
     contract?: boolean | ContractDefaultArgs<ExtArgs>
     project?: boolean | ProjectDefaultArgs<ExtArgs>
@@ -14901,6 +14964,13 @@ export namespace Prisma {
     contractId?: boolean
     dueDate?: boolean
     completedAt?: boolean
+    submissionNote?: boolean
+    submissionUrl?: boolean
+    submittedAt?: boolean
+    fundedAt?: boolean
+    releasedAt?: boolean
+    rejectedReason?: boolean
+    createdAt?: boolean
     projectId?: boolean
     contract?: boolean | ContractDefaultArgs<ExtArgs>
     project?: boolean | ProjectDefaultArgs<ExtArgs>
@@ -14915,10 +14985,17 @@ export namespace Prisma {
     contractId?: boolean
     dueDate?: boolean
     completedAt?: boolean
+    submissionNote?: boolean
+    submissionUrl?: boolean
+    submittedAt?: boolean
+    fundedAt?: boolean
+    releasedAt?: boolean
+    rejectedReason?: boolean
+    createdAt?: boolean
     projectId?: boolean
   }
 
-  export type MilestoneOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "description" | "amount" | "status" | "contractId" | "dueDate" | "completedAt" | "projectId", ExtArgs["result"]["milestone"]>
+  export type MilestoneOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "description" | "amount" | "status" | "contractId" | "dueDate" | "completedAt" | "submissionNote" | "submissionUrl" | "submittedAt" | "fundedAt" | "releasedAt" | "rejectedReason" | "createdAt" | "projectId", ExtArgs["result"]["milestone"]>
   export type MilestoneInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     contract?: boolean | ContractDefaultArgs<ExtArgs>
     project?: boolean | ProjectDefaultArgs<ExtArgs>
@@ -14947,6 +15024,13 @@ export namespace Prisma {
       contractId: string
       dueDate: Date | null
       completedAt: Date | null
+      submissionNote: string | null
+      submissionUrl: string | null
+      submittedAt: Date | null
+      fundedAt: Date | null
+      releasedAt: Date | null
+      rejectedReason: string | null
+      createdAt: Date
       projectId: string
     }, ExtArgs["result"]["milestone"]>
     composites: {}
@@ -15381,6 +15465,13 @@ export namespace Prisma {
     readonly contractId: FieldRef<"Milestone", 'String'>
     readonly dueDate: FieldRef<"Milestone", 'DateTime'>
     readonly completedAt: FieldRef<"Milestone", 'DateTime'>
+    readonly submissionNote: FieldRef<"Milestone", 'String'>
+    readonly submissionUrl: FieldRef<"Milestone", 'String'>
+    readonly submittedAt: FieldRef<"Milestone", 'DateTime'>
+    readonly fundedAt: FieldRef<"Milestone", 'DateTime'>
+    readonly releasedAt: FieldRef<"Milestone", 'DateTime'>
+    readonly rejectedReason: FieldRef<"Milestone", 'String'>
+    readonly createdAt: FieldRef<"Milestone", 'DateTime'>
     readonly projectId: FieldRef<"Milestone", 'String'>
   }
     
@@ -21498,6 +21589,13 @@ export namespace Prisma {
     contractId: 'contractId',
     dueDate: 'dueDate',
     completedAt: 'completedAt',
+    submissionNote: 'submissionNote',
+    submissionUrl: 'submissionUrl',
+    submittedAt: 'submittedAt',
+    fundedAt: 'fundedAt',
+    releasedAt: 'releasedAt',
+    rejectedReason: 'rejectedReason',
+    createdAt: 'createdAt',
     projectId: 'projectId'
   };
 
@@ -22608,6 +22706,13 @@ export namespace Prisma {
     contractId?: StringFilter<"Milestone"> | string
     dueDate?: DateTimeNullableFilter<"Milestone"> | Date | string | null
     completedAt?: DateTimeNullableFilter<"Milestone"> | Date | string | null
+    submissionNote?: StringNullableFilter<"Milestone"> | string | null
+    submissionUrl?: StringNullableFilter<"Milestone"> | string | null
+    submittedAt?: DateTimeNullableFilter<"Milestone"> | Date | string | null
+    fundedAt?: DateTimeNullableFilter<"Milestone"> | Date | string | null
+    releasedAt?: DateTimeNullableFilter<"Milestone"> | Date | string | null
+    rejectedReason?: StringNullableFilter<"Milestone"> | string | null
+    createdAt?: DateTimeFilter<"Milestone"> | Date | string
     projectId?: StringFilter<"Milestone"> | string
     contract?: XOR<ContractScalarRelationFilter, ContractWhereInput>
     project?: XOR<ProjectScalarRelationFilter, ProjectWhereInput>
@@ -22622,6 +22727,13 @@ export namespace Prisma {
     contractId?: SortOrder
     dueDate?: SortOrderInput | SortOrder
     completedAt?: SortOrderInput | SortOrder
+    submissionNote?: SortOrderInput | SortOrder
+    submissionUrl?: SortOrderInput | SortOrder
+    submittedAt?: SortOrderInput | SortOrder
+    fundedAt?: SortOrderInput | SortOrder
+    releasedAt?: SortOrderInput | SortOrder
+    rejectedReason?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
     projectId?: SortOrder
     contract?: ContractOrderByWithRelationInput
     project?: ProjectOrderByWithRelationInput
@@ -22639,6 +22751,13 @@ export namespace Prisma {
     contractId?: StringFilter<"Milestone"> | string
     dueDate?: DateTimeNullableFilter<"Milestone"> | Date | string | null
     completedAt?: DateTimeNullableFilter<"Milestone"> | Date | string | null
+    submissionNote?: StringNullableFilter<"Milestone"> | string | null
+    submissionUrl?: StringNullableFilter<"Milestone"> | string | null
+    submittedAt?: DateTimeNullableFilter<"Milestone"> | Date | string | null
+    fundedAt?: DateTimeNullableFilter<"Milestone"> | Date | string | null
+    releasedAt?: DateTimeNullableFilter<"Milestone"> | Date | string | null
+    rejectedReason?: StringNullableFilter<"Milestone"> | string | null
+    createdAt?: DateTimeFilter<"Milestone"> | Date | string
     projectId?: StringFilter<"Milestone"> | string
     contract?: XOR<ContractScalarRelationFilter, ContractWhereInput>
     project?: XOR<ProjectScalarRelationFilter, ProjectWhereInput>
@@ -22653,6 +22772,13 @@ export namespace Prisma {
     contractId?: SortOrder
     dueDate?: SortOrderInput | SortOrder
     completedAt?: SortOrderInput | SortOrder
+    submissionNote?: SortOrderInput | SortOrder
+    submissionUrl?: SortOrderInput | SortOrder
+    submittedAt?: SortOrderInput | SortOrder
+    fundedAt?: SortOrderInput | SortOrder
+    releasedAt?: SortOrderInput | SortOrder
+    rejectedReason?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
     projectId?: SortOrder
     _count?: MilestoneCountOrderByAggregateInput
     _avg?: MilestoneAvgOrderByAggregateInput
@@ -22673,6 +22799,13 @@ export namespace Prisma {
     contractId?: StringWithAggregatesFilter<"Milestone"> | string
     dueDate?: DateTimeNullableWithAggregatesFilter<"Milestone"> | Date | string | null
     completedAt?: DateTimeNullableWithAggregatesFilter<"Milestone"> | Date | string | null
+    submissionNote?: StringNullableWithAggregatesFilter<"Milestone"> | string | null
+    submissionUrl?: StringNullableWithAggregatesFilter<"Milestone"> | string | null
+    submittedAt?: DateTimeNullableWithAggregatesFilter<"Milestone"> | Date | string | null
+    fundedAt?: DateTimeNullableWithAggregatesFilter<"Milestone"> | Date | string | null
+    releasedAt?: DateTimeNullableWithAggregatesFilter<"Milestone"> | Date | string | null
+    rejectedReason?: StringNullableWithAggregatesFilter<"Milestone"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"Milestone"> | Date | string
     projectId?: StringWithAggregatesFilter<"Milestone"> | string
   }
 
@@ -23918,6 +24051,13 @@ export namespace Prisma {
     status?: $Enums.MilestoneStatus
     dueDate?: Date | string | null
     completedAt?: Date | string | null
+    submissionNote?: string | null
+    submissionUrl?: string | null
+    submittedAt?: Date | string | null
+    fundedAt?: Date | string | null
+    releasedAt?: Date | string | null
+    rejectedReason?: string | null
+    createdAt?: Date | string
     contract: ContractCreateNestedOneWithoutMilestonesInput
     project: ProjectCreateNestedOneWithoutMilestonesInput
   }
@@ -23931,6 +24071,13 @@ export namespace Prisma {
     contractId: string
     dueDate?: Date | string | null
     completedAt?: Date | string | null
+    submissionNote?: string | null
+    submissionUrl?: string | null
+    submittedAt?: Date | string | null
+    fundedAt?: Date | string | null
+    releasedAt?: Date | string | null
+    rejectedReason?: string | null
+    createdAt?: Date | string
     projectId: string
   }
 
@@ -23942,6 +24089,13 @@ export namespace Prisma {
     status?: EnumMilestoneStatusFieldUpdateOperationsInput | $Enums.MilestoneStatus
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    submissionNote?: NullableStringFieldUpdateOperationsInput | string | null
+    submissionUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    fundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    releasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rejectedReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     contract?: ContractUpdateOneRequiredWithoutMilestonesNestedInput
     project?: ProjectUpdateOneRequiredWithoutMilestonesNestedInput
   }
@@ -23955,6 +24109,13 @@ export namespace Prisma {
     contractId?: StringFieldUpdateOperationsInput | string
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    submissionNote?: NullableStringFieldUpdateOperationsInput | string | null
+    submissionUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    fundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    releasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rejectedReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     projectId?: StringFieldUpdateOperationsInput | string
   }
 
@@ -23967,6 +24128,13 @@ export namespace Prisma {
     contractId: string
     dueDate?: Date | string | null
     completedAt?: Date | string | null
+    submissionNote?: string | null
+    submissionUrl?: string | null
+    submittedAt?: Date | string | null
+    fundedAt?: Date | string | null
+    releasedAt?: Date | string | null
+    rejectedReason?: string | null
+    createdAt?: Date | string
     projectId: string
   }
 
@@ -23978,6 +24146,13 @@ export namespace Prisma {
     status?: EnumMilestoneStatusFieldUpdateOperationsInput | $Enums.MilestoneStatus
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    submissionNote?: NullableStringFieldUpdateOperationsInput | string | null
+    submissionUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    fundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    releasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rejectedReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type MilestoneUncheckedUpdateManyInput = {
@@ -23989,6 +24164,13 @@ export namespace Prisma {
     contractId?: StringFieldUpdateOperationsInput | string
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    submissionNote?: NullableStringFieldUpdateOperationsInput | string | null
+    submissionUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    fundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    releasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rejectedReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     projectId?: StringFieldUpdateOperationsInput | string
   }
 
@@ -25186,6 +25368,13 @@ export namespace Prisma {
     contractId?: SortOrder
     dueDate?: SortOrder
     completedAt?: SortOrder
+    submissionNote?: SortOrder
+    submissionUrl?: SortOrder
+    submittedAt?: SortOrder
+    fundedAt?: SortOrder
+    releasedAt?: SortOrder
+    rejectedReason?: SortOrder
+    createdAt?: SortOrder
     projectId?: SortOrder
   }
 
@@ -25202,6 +25391,13 @@ export namespace Prisma {
     contractId?: SortOrder
     dueDate?: SortOrder
     completedAt?: SortOrder
+    submissionNote?: SortOrder
+    submissionUrl?: SortOrder
+    submittedAt?: SortOrder
+    fundedAt?: SortOrder
+    releasedAt?: SortOrder
+    rejectedReason?: SortOrder
+    createdAt?: SortOrder
     projectId?: SortOrder
   }
 
@@ -25214,6 +25410,13 @@ export namespace Prisma {
     contractId?: SortOrder
     dueDate?: SortOrder
     completedAt?: SortOrder
+    submissionNote?: SortOrder
+    submissionUrl?: SortOrder
+    submittedAt?: SortOrder
+    fundedAt?: SortOrder
+    releasedAt?: SortOrder
+    rejectedReason?: SortOrder
+    createdAt?: SortOrder
     projectId?: SortOrder
   }
 
@@ -29104,6 +29307,13 @@ export namespace Prisma {
     status?: $Enums.MilestoneStatus
     dueDate?: Date | string | null
     completedAt?: Date | string | null
+    submissionNote?: string | null
+    submissionUrl?: string | null
+    submittedAt?: Date | string | null
+    fundedAt?: Date | string | null
+    releasedAt?: Date | string | null
+    rejectedReason?: string | null
+    createdAt?: Date | string
     contract: ContractCreateNestedOneWithoutMilestonesInput
   }
 
@@ -29116,6 +29326,13 @@ export namespace Prisma {
     contractId: string
     dueDate?: Date | string | null
     completedAt?: Date | string | null
+    submissionNote?: string | null
+    submissionUrl?: string | null
+    submittedAt?: Date | string | null
+    fundedAt?: Date | string | null
+    releasedAt?: Date | string | null
+    rejectedReason?: string | null
+    createdAt?: Date | string
   }
 
   export type MilestoneCreateOrConnectWithoutProjectInput = {
@@ -29347,6 +29564,13 @@ export namespace Prisma {
     contractId?: StringFilter<"Milestone"> | string
     dueDate?: DateTimeNullableFilter<"Milestone"> | Date | string | null
     completedAt?: DateTimeNullableFilter<"Milestone"> | Date | string | null
+    submissionNote?: StringNullableFilter<"Milestone"> | string | null
+    submissionUrl?: StringNullableFilter<"Milestone"> | string | null
+    submittedAt?: DateTimeNullableFilter<"Milestone"> | Date | string | null
+    fundedAt?: DateTimeNullableFilter<"Milestone"> | Date | string | null
+    releasedAt?: DateTimeNullableFilter<"Milestone"> | Date | string | null
+    rejectedReason?: StringNullableFilter<"Milestone"> | string | null
+    createdAt?: DateTimeFilter<"Milestone"> | Date | string
     projectId?: StringFilter<"Milestone"> | string
   }
 
@@ -29790,6 +30014,13 @@ export namespace Prisma {
     status?: $Enums.MilestoneStatus
     dueDate?: Date | string | null
     completedAt?: Date | string | null
+    submissionNote?: string | null
+    submissionUrl?: string | null
+    submittedAt?: Date | string | null
+    fundedAt?: Date | string | null
+    releasedAt?: Date | string | null
+    rejectedReason?: string | null
+    createdAt?: Date | string
     project: ProjectCreateNestedOneWithoutMilestonesInput
   }
 
@@ -29801,6 +30032,13 @@ export namespace Prisma {
     status?: $Enums.MilestoneStatus
     dueDate?: Date | string | null
     completedAt?: Date | string | null
+    submissionNote?: string | null
+    submissionUrl?: string | null
+    submittedAt?: Date | string | null
+    fundedAt?: Date | string | null
+    releasedAt?: Date | string | null
+    rejectedReason?: string | null
+    createdAt?: Date | string
     projectId: string
   }
 
@@ -31990,6 +32228,13 @@ export namespace Prisma {
     contractId: string
     dueDate?: Date | string | null
     completedAt?: Date | string | null
+    submissionNote?: string | null
+    submissionUrl?: string | null
+    submittedAt?: Date | string | null
+    fundedAt?: Date | string | null
+    releasedAt?: Date | string | null
+    rejectedReason?: string | null
+    createdAt?: Date | string
   }
 
   export type ReviewCreateManyProjectInput = {
@@ -32060,6 +32305,13 @@ export namespace Prisma {
     status?: EnumMilestoneStatusFieldUpdateOperationsInput | $Enums.MilestoneStatus
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    submissionNote?: NullableStringFieldUpdateOperationsInput | string | null
+    submissionUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    fundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    releasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rejectedReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     contract?: ContractUpdateOneRequiredWithoutMilestonesNestedInput
   }
 
@@ -32072,6 +32324,13 @@ export namespace Prisma {
     contractId?: StringFieldUpdateOperationsInput | string
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    submissionNote?: NullableStringFieldUpdateOperationsInput | string | null
+    submissionUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    fundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    releasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rejectedReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type MilestoneUncheckedUpdateManyWithoutProjectInput = {
@@ -32083,6 +32342,13 @@ export namespace Prisma {
     contractId?: StringFieldUpdateOperationsInput | string
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    submissionNote?: NullableStringFieldUpdateOperationsInput | string | null
+    submissionUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    fundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    releasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rejectedReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ReviewUpdateWithoutProjectInput = {
@@ -32123,6 +32389,13 @@ export namespace Prisma {
     status?: $Enums.MilestoneStatus
     dueDate?: Date | string | null
     completedAt?: Date | string | null
+    submissionNote?: string | null
+    submissionUrl?: string | null
+    submittedAt?: Date | string | null
+    fundedAt?: Date | string | null
+    releasedAt?: Date | string | null
+    rejectedReason?: string | null
+    createdAt?: Date | string
     projectId: string
   }
 
@@ -32154,6 +32427,13 @@ export namespace Prisma {
     status?: EnumMilestoneStatusFieldUpdateOperationsInput | $Enums.MilestoneStatus
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    submissionNote?: NullableStringFieldUpdateOperationsInput | string | null
+    submissionUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    fundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    releasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rejectedReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     project?: ProjectUpdateOneRequiredWithoutMilestonesNestedInput
   }
 
@@ -32165,6 +32445,13 @@ export namespace Prisma {
     status?: EnumMilestoneStatusFieldUpdateOperationsInput | $Enums.MilestoneStatus
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    submissionNote?: NullableStringFieldUpdateOperationsInput | string | null
+    submissionUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    fundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    releasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rejectedReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     projectId?: StringFieldUpdateOperationsInput | string
   }
 
@@ -32176,6 +32463,13 @@ export namespace Prisma {
     status?: EnumMilestoneStatusFieldUpdateOperationsInput | $Enums.MilestoneStatus
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    submissionNote?: NullableStringFieldUpdateOperationsInput | string | null
+    submissionUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    fundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    releasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rejectedReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     projectId?: StringFieldUpdateOperationsInput | string
   }
 

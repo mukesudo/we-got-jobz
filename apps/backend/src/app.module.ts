@@ -11,6 +11,7 @@ import { JobsModule } from './jobs/jobs.module';
 import { TalentModule } from './talent/talent.module';
 import { ProposalsModule } from './proposals/proposals.module';
 import { ContractsModule } from './contracts/contracts.module';
+import { MilestonesModule } from './milestones/milestones.module';
 import { BidsModule } from './bids/bids.module';
 import { AdminModule } from './admin/admin.module';
 import { ProfilesModule } from './profiles/profiles.module';
@@ -33,6 +34,7 @@ import { MetricsModule } from './metrics/metrics.module';
     TalentModule,
     ProposalsModule,
     ContractsModule,
+    MilestonesModule,
     BidsModule,
     ProfilesModule,
     AdminModule,

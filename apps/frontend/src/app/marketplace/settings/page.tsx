@@ -4,12 +4,13 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useSession, updateUser, changePassword, setPassword } from "@/lib/auth-client";
 import { BillingService, type BillingSummary } from "@/lib/billing.service";
+import { UsersService } from "@/lib/users.service";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { Bell, CreditCard, Lock, User } from "lucide-react";
+import { Bell, Briefcase, Code, CreditCard, Lock, User } from "lucide-react";
 
 const defaultNotifications = {
   notificationsEmail: true,
@@ -24,6 +25,7 @@ export default function SettingsPage() {
     | {
         name?: string | null;
         email?: string | null;
+        role?: "CLIENT" | "FREELANCER" | "ADMIN";
         notificationsEmail?: boolean;
         notificationsMarketing?: boolean;
         notificationsJobAlerts?: boolean;
@@ -55,6 +57,10 @@ export default function SettingsPage() {
   const [passwordSaving, setPasswordSaving] = useState(false);
   const [passwordError, setPasswordError] = useState<string | null>(null);
   const [passwordSuccess, setPasswordSuccess] = useState<string | null>(null);
+
+  const [roleSaving, setRoleSaving] = useState(false);
+  const [roleError, setRoleError] = useState<string | null>(null);
+  const [roleSuccess, setRoleSuccess] = useState<string | null>(null);
 
   const [billingSummary, setBillingSummary] = useState<BillingSummary | null>(null);
   const [billingLoading, setBillingLoading] = useState(false);
@@ -209,6 +215,29 @@ export default function SettingsPage() {
     }
   };
 
+  const handleRoleChange = async (newRole: "CLIENT" | "FREELANCER") => {
+    if (status !== "authenticated") return;
+    if (currentUser?.role === newRole) return;
+
+    setRoleError(null);
+    setRoleSuccess(null);
+    setRoleSaving(true);
+
+    try {
+      await UsersService.updateProfile({ role: newRole } as any);
+      setRoleSuccess(
+        `You are now a ${newRole === "CLIENT" ? "Client" : "Freelancer"}. Reloading...`,
+      );
+      // Reload so session role is refreshed across the app.
+      setTimeout(() => window.location.reload(), 800);
+    } catch (error) {
+      console.error(error);
+      setRoleError("Failed to switch role. Please try again.");
+    } finally {
+      setRoleSaving(false);
+    }
+  };
+
   const handleDeposit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const amount = Number(depositAmount);
@@ -291,6 +320,9 @@ export default function SettingsPage() {
             <a href="#account" className="font-semibold text-primary flex items-center">
               <User className="mr-2 h-5 w-5" /> Account
             </a>
+            <a href="#role" className="hover:text-primary flex items-center">
+              <Briefcase className="mr-2 h-5 w-5" /> Account Type
+            </a>
             <a href="#security" className="hover:text-primary flex items-center">
               <Lock className="mr-2 h-5 w-5" /> Security
             </a>
@@ -337,6 +369,71 @@ export default function SettingsPage() {
                 {accountSaving ? "Saving..." : "Save Changes"}
               </Button>
             </form>
+          </Card>
+
+          <Card id="role" className="p-8 mb-12">
+            <h2 className="text-2xl font-bold mb-2">Account Type</h2>
+            <p className="text-sm text-muted-foreground mb-6">
+              Switch between Client and Freelancer at any time. Your existing
+              data, contracts, and wallet are preserved.
+            </p>
+            {roleError && (
+              <div className="mb-4 rounded-md bg-red-50 px-4 py-3 text-sm text-red-700">
+                {roleError}
+              </div>
+            )}
+            {roleSuccess && (
+              <div className="mb-4 rounded-md bg-green-50 px-4 py-3 text-sm text-green-700">
+                {roleSuccess}
+              </div>
+            )}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {(["CLIENT", "FREELANCER"] as const).map((role) => {
+                const isActive = currentUser?.role === role;
+                const Icon = role === "CLIENT" ? Briefcase : Code;
+                const title = role === "CLIENT" ? "Client" : "Freelancer";
+                const description =
+                  role === "CLIENT"
+                    ? "Post jobs, hire talent, and manage contracts."
+                    : "Find work, send proposals, and earn securely.";
+                return (
+                  <button
+                    type="button"
+                    key={role}
+                    disabled={roleSaving || isActive}
+                    onClick={() => handleRoleChange(role)}
+                    className={`text-left p-5 rounded-xl border-2 transition-all ${
+                      isActive
+                        ? "border-blue-600 bg-blue-50 cursor-default"
+                        : "border-slate-200 hover:border-slate-300 hover:bg-slate-50"
+                    } ${roleSaving ? "opacity-60" : ""}`}
+                  >
+                    <div className="flex items-center gap-3 mb-2">
+                      <div
+                        className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+                          isActive
+                            ? "bg-blue-600 text-white"
+                            : "bg-slate-100 text-slate-600"
+                        }`}
+                      >
+                        <Icon className="h-5 w-5" />
+                      </div>
+                      <div className="flex-1">
+                        <p className="font-semibold text-slate-900">{title}</p>
+                        {isActive && (
+                          <span className="text-xs text-blue-600 font-medium">
+                            Current role
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      {description}
+                    </p>
+                  </button>
+                );
+              })}
+            </div>
           </Card>
 
           <Card id="security" className="p-8 mb-12">

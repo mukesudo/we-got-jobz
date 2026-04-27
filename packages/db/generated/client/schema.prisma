@@ -243,14 +243,21 @@ enum ContractStatus {
 }
 
 model Milestone {
-  id          String          @id @default(cuid())
-  title       String
-  description String?
-  amount      Float
-  status      MilestoneStatus @default(PENDING)
-  contractId  String
-  dueDate     DateTime?
-  completedAt DateTime?
+  id             String          @id @default(cuid())
+  title          String
+  description    String?
+  amount         Float
+  status         MilestoneStatus @default(PENDING)
+  contractId     String
+  dueDate        DateTime?
+  completedAt    DateTime?
+  submissionNote String?
+  submissionUrl  String?
+  submittedAt    DateTime?
+  fundedAt       DateTime?
+  releasedAt     DateTime?
+  rejectedReason String?
+  createdAt      DateTime        @default(now())
 
   contract  Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
   project   Project  @relation("ProjectMilestones", fields: [projectId], references: [id])

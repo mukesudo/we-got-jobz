@@ -31,6 +31,25 @@ export class UsersService {
   }
 
   async updateUser(userId: string, data: any) {
+    // If role is being changed, ensure the corresponding profile exists.
+    if (data?.role && (data.role === UserRole.CLIENT || data.role === UserRole.FREELANCER)) {
+      if (data.role === UserRole.CLIENT) {
+        const existing = await this.prisma.clientProfile.findUnique({
+          where: { userId },
+        });
+        if (!existing) {
+          await this.prisma.clientProfile.create({ data: { userId } });
+        }
+      } else if (data.role === UserRole.FREELANCER) {
+        const existing = await this.prisma.freelancerProfile.findUnique({
+          where: { userId },
+        });
+        if (!existing) {
+          await this.prisma.freelancerProfile.create({ data: { userId } });
+        }
+      }
+    }
+
     return this.prisma.user.update({
       where: { id: userId },
       data,

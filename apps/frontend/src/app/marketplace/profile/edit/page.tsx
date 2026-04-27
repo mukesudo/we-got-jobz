@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useSession } from "@/lib/auth-client";
+import { useSession, updateUser } from "@/lib/auth-client";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -68,6 +68,11 @@ export default function EditProfilePage() {
     setSubmitting(true);
 
     try {
+      // Update name via better-auth (separate from profile-specific data)
+      if (formData.name && formData.name !== session?.user?.name) {
+        await updateUser({ name: formData.name.trim() });
+      }
+
       // We assume session.user.role is either CLIENT or FREELANCER
       const role = (session?.user as any)?.role;
       const endpoint = role === "CLIENT" ? "/api/profiles/client" : "/api/profiles/freelancer";
@@ -142,8 +147,9 @@ export default function EditProfilePage() {
               <Label htmlFor="name">Full Name</Label>
               <Input
                 id="name"
-                disabled // Cannot change name from profile easily without auth api
                 value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                placeholder="Your full name"
               />
             </div>
 
